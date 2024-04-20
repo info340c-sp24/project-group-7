@@ -11,10 +11,10 @@ nav {
     align-items: center;
 }
 
-.navbar-title {
+.navbar-brand {
     font-family: "Graduate";
-    font-size: 40px;
-    color: #fff;
+    font-size: 12px !important;
+    color: white !important;
     text-decoration: none;
 }
 
@@ -29,30 +29,30 @@ nav {
 
 .signin:hover {
     background-color: #45a049;
-    color: white;
+    color: white !important;
 }
 
-nav a {
-    color: #fff;
-    text-decoration: none;
-    margin: 0 10px;
+.nav-link {
+    color: white !important;
 }
 
 nav a:hover {
-    color: #45a049;
+    color: #45a049 !important;
+}
+
+.container {
+    padding-top: 70px;
 }
 
 .card-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: calc(100vh - 500px);
-    margin-top: 10px;
 }
 
 .card-title {
     font-family: "Graduate";
-    font-size: 50px;
+    font-size: 20px;
     font-weight: bold;
 }
 
@@ -64,3 +64,27 @@ nav a:hover {
 .card-body a:hover {
     color: #45a049;
 }
+
+.card-text {
+    font-size: 16px;
+}
+
+@media (min-width: 598px) {
+    
+}
+
+@media (min-width: 768px) {
+    html {
+        height: 100%;
+    }
+
+    .navbar-brand {
+        font-size: 1.5rem !important;
+    }
+}
+
+@media (min-width: 992px) {
+    .navbar-brand {
+        font-size: 5rem;
+    }
+  }
