@@ -1,0 +1,50 @@
+html {
+    height: 100%;
+    font-family: 'Roboto', Arial, sans-serif;
+}
+
+nav {
+    background-color: #333;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-title {
+    font-size: 24px;
+    color: #fff;
+    text-decoration: none;
+}
+
+.signin {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.signin:hover {
+    background-color: #45a049;
+    color: white;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+nav a:hover {
+    color: #45a049;
+}
+
+.card-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 500px);
+    margin-top: 10px;
+  }
