@@ -66,11 +66,22 @@ footer {
     padding: 10px 0;
     background: #333;
     color: white;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+}
+
+.homeF {
+    text-align: center;
+    padding: 10px 0;
+    background: #333;
+    color: white;
     position: fixed;
     left: 0;
     bottom: 0;
     width: 100%;
 }
+
 
 @media (min-width: 598px) {
     .navbar-brand {
