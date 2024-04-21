@@ -98,4 +98,22 @@ footer {
     .navbar-brand {
         font-size: 5rem;
     }
+
+    nav img {
+        width: 4rem;
+    }
+}
+
+@media (min-width: 1200px) {
+    body {
+        padding-top: 80px;
+    }
+
+    .navbar-brand {
+        font-size: 7rem;
+    }
+
+    nav img {
+        width: 5rem;
+    }
 }
