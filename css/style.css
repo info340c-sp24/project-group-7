@@ -1,0 +1,84 @@
+html {
+    height: 100%;
+    font-family: 'Roboto', Arial, sans-serif;
+}
+
+nav {
+    background-color: #333;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav img {
+    width: 2rem;
+    height: auto;
+}
+
+.navbar-brand {
+    font-family: "Graduate";
+    font-size: 12px !important;
+    color: white !important;
+    text-decoration: none;
+}
+
+.signin {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.signin:hover {
+    background-color: #45a049;
+    color: white !important;
+}
+
+.nav-link {
+    color: white !important;
+}
+
+body {
+    padding-top: 60px;
+}
+
+body a {
+    text-decoration: none;
+}
+
+a:hover {
+    color: #45a049 !important;
+}
+
+h1, h2 {
+    font-family: "Graduate";
+}
+
+@media (min-width: 598px) {
+    .navbar-brand {
+        font-size: 1.5rem !important;
+    }
+}
+
+@media (min-width: 768px) {
+    html {
+        height: 100%;
+    }
+
+    .navbar-brand {
+        font-size: 2rem !important;
+    }
+
+    nav img {
+        width: 3rem;
+    }
+}
+
+@media (min-width: 992px) {
+    .navbar-brand {
+        font-size: 5rem;
+    }
+}
