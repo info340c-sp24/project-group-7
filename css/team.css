@@ -23,12 +23,19 @@ body{
 
 th{
     height: 2rem;
-    text-align: left;
+    text-align: center;
     color: #009133;
     background-color:#d3d3d3 ;
     
 }
 
+.atr th{
+    height: 2rem;
+    text-align: center;
+    color: #004491;
+    background-color:#d3d3d3 ;
+
+}
 .cover {
     width: 100px;
     height: 100px;
