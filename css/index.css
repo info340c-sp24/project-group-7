@@ -1,5 +1,12 @@
+body {
+    background-image: url('../img/bg-small.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
 .container {
-    padding-top: 70px;
+    padding-top: 10px;
 }
 
 .card-container {
@@ -37,11 +44,26 @@
         width: 6rem;
         height: auto;
     }
+
+    .container {
+        padding-top: 20px;
+    }
 }
 
 @media (min-width: 992px) {
+    body {
+        background-image: url('../img/bg-large.jpg');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+    }
+
     .card-body img {
         width: 7rem;
         height: auto;
+    }
+
+    .container {
+        padding-top: 30px;
     }
 }
