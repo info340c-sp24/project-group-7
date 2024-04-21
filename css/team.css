@@ -1,0 +1,145 @@
+html {
+    height: 100%;
+    font-family: 'Roboto', Arial, sans-serif;
+}
+
+
+
+/* navbar stuff*/
+
+nav {
+    background-color: #333;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-brand {
+    font-family: "Graduate";
+    font-size: 12px !important;
+    color: white !important;
+    text-decoration: none;
+}
+
+.signin {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.signin:hover {
+    background-color: #45a049;
+    color: white !important;
+}
+
+.nav-link {
+    color: white !important;
+}
+
+nav a:hover {
+    color: #45a049 !important;
+}
+
+
+.container {
+    padding-top: 70px;
+}
+
+.card-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-title {
+    font-family: "Graduate";
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.card-body a {
+    text-decoration: none;
+    color: black;
+}
+
+.card-body a:hover {
+    color: #45a049;
+}
+
+.card-text {
+    font-size: 16px;
+}
+
+@media (min-width: 598px) {
+    
+}
+
+@media (min-width: 768px) {
+    html {
+        height: 100%;
+    }
+
+    .navbar-brand {
+        font-size: 1.5rem !important;
+    }
+}
+
+@media (min-width: 992px) {
+    .navbar-brand {
+        font-size: 5rem;
+    }
+  }
+
+/* navbar stuff*/
+
+
+
+
+
+
+
+
+
+
+
+
+body{
+    text-align: center;
+  }
+.head{
+    font-weight: 300;
+    font-family: "Roboto", sans-serif;
+    text-align: center;
+}
+
+.table{
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    border-collapse: collapse;
+}
+
+th{
+    height: 2rem;
+    text-align: left;
+    color: #009133;
+    background-color:#d3d3d3 ;
+    
+}
+
+.cover {
+    width: 100px;
+    height: 100px;
+}
+
+th, td {
+    padding: 0.5em;
+    border-bottom: 1px solid #d3d3d3;
+    text-align: center;
+}
+
+
