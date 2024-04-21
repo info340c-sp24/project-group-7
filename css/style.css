@@ -53,6 +53,10 @@ a:hover {
     color: #45a049 !important;
 }
 
+h1 {
+    padding-top: 50px;
+}
+
 h1, h2 {
     font-family: "Graduate";
 }
@@ -101,6 +105,10 @@ footer {
 
     nav img {
         width: 4rem;
+    }
+
+    h1 {
+        padding-top: 80px;
     }
 }
 
