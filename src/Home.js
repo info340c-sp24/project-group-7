@@ -1,7 +1,7 @@
-// MainContent.js
 import React from 'react';
+import './index.css';
 
-const MainContent = () => {
+const Home = () => {
     return (
         <div className="container">
             <div className="row card-container">
@@ -37,4 +37,4 @@ const MainContent = () => {
     );
 }
 
-export default MainContent;
+export default Home;

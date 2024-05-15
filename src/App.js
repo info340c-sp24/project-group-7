@@ -1,17 +1,27 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './Navbar';
-import MainContent from './MainContent';
+import Home from './Home';
+import Profile from './Profile';
 import Footer from './Footer';
-import './index.css';
+import Roster from './Roster';
+import Agency from './Agency';
+import Signin from './Signin';
 import './style.css';
 
-function App() {
+const App = () => {
   return (
-    <div>
+    <Router>
       <Navbar />
-      <MainContent />
+      <Routes>
+          <Route exact path="/" element={<Home />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/team" element={<Roster />} />
+          <Route path="/agency" element={<Agency />} />
+          <Route path="/signin" element={<Signin />} />
+      </Routes>
       <Footer />
-    </div>
+    </Router>
   );
 }
 
