@@ -1,95 +1,145 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import _ from 'lodash';
 import './team.css';
 
-const Agency = () => {
+export default function Agency(props) {
+
+  const [sortByCriteria, setSortByCriteria] = useState(null);
+  const [isAscending, setIsAscending] = useState(null);
+
+  const handleClick = (event) => {
+    const { name } = event.currentTarget;
+
+    if (sortByCriteria !== name) {
+      setSortByCriteria(name);
+      setIsAscending(true);
+    } else {
+      setIsAscending((prevAscending) => {
+        if (prevAscending === true) {
+          return false;
+        } else {
+          setSortByCriteria(null);
+          return null;
+        }
+      });
+    }
+  };
+
+  let sortedData = [...props.data];
+  if (sortByCriteria) {
+    sortedData = _.sortBy(sortedData, sortByCriteria);
+    if (isAscending === false) {
+      sortedData.reverse();
+    }
+  }
+
   return (
-    <table className="table">
+    <div className="table-responsive">
+      <table className="table">
         <thead>
-            <tr className="atr">
-                <th scope="col">Name (free agent)</th>
-                <th scope="col">Contact</th>
-                <th scope="col">Position</th>
-                <th scope="col">Points/Assists</th>
-                <th scope="col">Games played</th>
-                <th scope="col">Rebounds per game</th>
-                <th scope="col">Steals per game</th>
-                <th scope="col">Picture</th>
-            </tr>
+          <tr>
+            <th>
+              Name
+            </th>
+            <th className="text-end">
+              Contact
+            </th>
+            <th className="text-center">
+              Position
+            </th>
+            <th>
+              <SortButton
+                name="points"
+                active={sortByCriteria === 'points'}
+                ascending={sortByCriteria === 'points' && isAscending}
+                onClick={handleClick}
+              />
+              Points
+            </th>
+            <th>
+              <SortButton
+                name="assists"
+                active={sortByCriteria === 'assists'}
+                ascending={sortByCriteria === 'assists' && isAscending}
+                onClick={handleClick}
+              />
+              Assists
+            </th>
+            <th>
+              <SortButton
+                name="rebounds"
+                active={sortByCriteria === 'rebounds'}
+                ascending={sortByCriteria === 'rebounds' && isAscending}
+                onClick={handleClick}
+              />
+              Rebounds
+            </th>
+            <th>
+              <SortButton
+                name="games"
+                active={sortByCriteria === 'games'}
+                ascending={sortByCriteria === 'games' && isAscending}
+                onClick={handleClick}
+              />
+              Games
+            </th>
+            <th>
+              <SortButton
+                name="steals"
+                active={sortByCriteria === 'steals'}
+                ascending={sortByCriteria === 'steals' && isAscending}
+                onClick={handleClick}
+              />
+              Steals
+            </th>
+          </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>Nathan Yung</td>
-                <td>email@hotmail.com</td>
-                <td>Small Guard</td>
-                <td>20/20</td>
-                <td>6</td>
-                <td>3</td>
-                <td>2</td>
-                <td>
-                    <a href="#" target="_blank">
-                        <img src="img/pfp.jpg" alt="Donatello" className="cover" />
-                    </a>
-                </td>
-            </tr>
-            <tr>
-                <td>Paul Gialis</td>
-                <td>email@hotmail.com</td>
-                <td>Center</td>
-                <td>30/30</td>
-                <td>6</td>
-                <td>3</td>
-                <td>2</td>
-                <td>
-                    <a href="#" target="_blank">
-                        <img src="img/pfp.jpg" alt="Leonardo" className="cover" />
-                    </a>
-                </td>
-            </tr>
-            <tr>
-                <td><a href="/profile">Zain Khan</a></td>
-                <td>email@hotmail.com</td>
-                <td>Point Guard</td>
-                <td>40/40</td>
-                <td>6</td>
-                <td>3</td>
-                <td>2</td>
-                <td>
-                    <a href="#" target="_blank">
-                        <img src="img/pfp.jpg" alt="Michelangelo" className="cover" />
-                    </a>
-                </td>
-            </tr>
-            <tr>
-                <td>Chat</td>
-                <td>email@hotmail.com</td>
-                <td>Shooting Guard</td>
-                <td>0/500000000</td>
-                <td>6</td>
-                <td>3</td>
-                <td>2</td>
-                <td>
-                    <a href="#" target="_blank">
-                        <img src="img/pfp.jpg" alt="Raphael" className="cover" />
-                    </a>
-                </td>
-            </tr>
-            <tr>
-                <td>Lebron James</td>
-                <td>email@hotmail.com</td>
-                <td>Power Forward</td>
-                <td>500000000/0</td>
-                <td>6</td>
-                <td>3</td>
-                <td>2</td>
-                <td>
-                    <a href="#" target="_blank">
-                        <img src="img/pfp.jpg" alt="Splinter" className="cover" />
-                    </a>
-                </td>
-            </tr>
+          {sortedData.map((profileObj) => (
+            <AgentDataRow key={profileObj.username} profileObj={profileObj} />
+          ))}
         </tbody>
-    </table>
+      </table>
+    </div>
   );
 }
 
-export default Agency;
+function SortButton(props) {
+    let iconClasses = '';
+    let iconText = '|';
+  
+    if (props.active) {
+      iconClasses += ` active`;
+      iconText = props.ascending ? 'arrow_upward' : 'arrow_downward';
+    }
+  
+    return (
+      <button className="btn btn-sm btn-sort" name={props.name} onClick={props.onClick}>
+        <span className={`material-icons${iconClasses}`} aria-label={`sort by ${props.name}`}>
+          {iconText}
+        </span>
+      </button>
+    );
+  }
+
+function AgentDataRow({ profileObj }) {
+  return (
+    <tr>
+      <td>{`${profileObj.firstName} ${profileObj.lastName}`}</td>
+      <td className="text-end">{profileObj.contact}</td>
+      <td className="text-center">{profileObj.position}</td>
+      <td>{profileObj.points}</td>
+      <td>{profileObj.assists}</td>
+      <td>{profileObj.rebounds}</td>
+      <td>{profileObj.games}</td>
+      <td>{profileObj.steals}</td>
+        <td>
+            <Link to={`/profile/${profileObj.username}`}>
+                <span className="material-icons">add</span>
+            </Link>
+        </td>
+    </tr>
+      
+  );
+}

@@ -4,7 +4,7 @@ const Navbar = () => {
   return (
     <nav className="navbar fixed-top navbar-expand-lg navbar-light bg-dark">
       <img src="img/Logo.png" alt="Logo" />
-      <a className="navbar-brand" href="index.html">So You Think You Can Ball?</a>
+      <a className="navbar-brand" href="/">So You Think You Can Ball?</a>
       <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span className="navbar-toggler-icon"></span>
       </button>
