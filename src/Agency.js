@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import './team.css';
+import './style.css'
 
 export default function Agency(props) {
 
