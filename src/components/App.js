@@ -15,12 +15,16 @@ const App = () => {
     const user = sessionStorage.getItem('authenticatedUser');
     return user ? JSON.parse(user) : null;
   });
+  const [currentTeam, setCurrentTeam] = useState(authenticatedUser ? authenticatedUser.team : null);
+
 
   useEffect(() => {
     if (authenticatedUser) {
       sessionStorage.setItem('authenticatedUser', JSON.stringify(authenticatedUser));
+      setCurrentTeam(authenticatedUser.team);
     } else {
       sessionStorage.removeItem('authenticatedUser');
+      setCurrentTeam(null);
     }
   }, [authenticatedUser]);
 
@@ -52,7 +56,7 @@ const App = () => {
           path="/profile" 
           element={<Profile user={authenticatedUser} updateUser={updateUser} />} 
         />
-        <Route path="/team" element={<Team data={profilesData} />} />
+        {authenticatedUser && <Route path="/team" element={<Team data={profilesData} currentTeam={currentTeam} />} />}
         <Route path="/agency" element={<Agency data={profilesData} />} />
         <Route path="/signin" element={<Signin onLogin={handleLogin} authenticatedUser={authenticatedUser} />} />
       </Routes>

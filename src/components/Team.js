@@ -1,7 +1,7 @@
 import React from 'react';
 import './team.css';
 
-const Team = ({ data }) => {
+const Team = ({ data, currentTeam }) => {
   return (
     <div className="table-responsive">
       <table className="table w-100">
@@ -19,7 +19,7 @@ const Team = ({ data }) => {
           </tr>
         </thead>
         <tbody>
-          {data.map((profileObj) => (
+          {data.filter(profileObj => profileObj.team === currentTeam).map((profileObj) => (
             <tr key={profileObj.username}>
               <td>{`${profileObj.firstName} ${profileObj.lastName}`}</td>
               <td>{profileObj.email}</td>
