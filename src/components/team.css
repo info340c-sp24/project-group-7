@@ -2,6 +2,17 @@ html {
     height: 100%;
     font-family: 'Roboto', Arial, sans-serif;
 }
+.noTeam {
+    color: white;
+}
+
+.teamMessageContainer {
+    background-color: white;
+    color: black;
+    width: 100%;
+    padding: 30px;
+    box-sizing: border-box;
+}
 
 body{
     text-align: center;
@@ -46,5 +57,3 @@ th, td {
     border-bottom: 1px solid #d3d3d3;
     text-align: center;
 }
-
-

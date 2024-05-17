@@ -56,7 +56,7 @@ const App = () => {
           path="/profile" 
           element={<Profile user={authenticatedUser} updateUser={updateUser} />} 
         />
-        {authenticatedUser && <Route path="/team" element={<Team data={profilesData} currentTeam={currentTeam} />} />}
+        <Route path="/team" element={<Team data={profilesData} currentTeam={currentTeam} setCurrentTeam={setCurrentTeam} />} />
         <Route path="/agency" element={<Agency data={profilesData} />} />
         <Route path="/signin" element={<Signin onLogin={handleLogin} authenticatedUser={authenticatedUser} />} />
       </Routes>

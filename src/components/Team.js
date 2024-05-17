@@ -1,8 +1,47 @@
-import React from 'react';
+import React, { useState }  from 'react';
 import './team.css';
 
-const Team = ({ data, currentTeam }) => {
+const Team = ({ data, currentTeam, setCurrentTeam }) => {
+  const [teamName, setTeamName] = useState(currentTeam);
+  const [isEditing, setIsEditing] = useState(false);
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  // edit the db stuff
+  const handleSave = () => {
+    // Here you would typically make an API call to update the user's team in your database
+    // For now, we'll just update the state
+    setIsEditing(false);
+    setCurrentTeam(teamName);
+  };
+
+  const handleChange = (event) => {
+    setTeamName(event.target.value);
+  };
   return (
+    <div className="noTeam">
+      {currentTeam ? (
+        <h2>Your team: {currentTeam}</h2>
+      ) : (
+       
+        <div className="teamMessageContainer">
+          <h2>You don't have a team yet.</h2>
+          {isEditing ? (
+            <div>
+              <input type="text" value={teamName} onChange={handleChange} />
+              <button onClick={handleSave}>Save</button>
+            </div>
+          ) : (
+            <button onClick={handleEdit}>Create a team</button>
+          )}
+          
+          <h3>Free Agents:</h3>
+        </div>
+      )}
+
+      {
+      
     <div className="table-responsive">
       <table className="table w-100">
         <thead>
@@ -35,6 +74,8 @@ const Team = ({ data, currentTeam }) => {
         </tbody>
       </table>
     </div>
+}
+  </div>
   );
 }
 
