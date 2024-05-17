@@ -1,5 +1,5 @@
 body {
-    background-image: url('./img/bg-large.jpg');
+    background-image: url('./img/bg-small.jpg');
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -44,15 +44,11 @@ body {
         width: 6rem;
         height: auto;
     }
-
-    .container {
-        padding-top: 20px;
-    }
 }
 
 @media (min-width: 992px) {
     body {
-        background-image: '%PUBLIC_URL%/bg-large.jpg';
+        background-image: url('./img/bg-large.jpg');
         background-repeat: no-repeat;
         background-position: center;
         background-size: cover;
@@ -61,9 +57,5 @@ body {
     .card-body img {
         width: 7rem;
         height: auto;
-    }
-
-    .container {
-        padding-top: 30px;
     }
 }

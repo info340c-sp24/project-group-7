@@ -1,28 +1,35 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
-const Navbar = () => {
+const Navbar = ({ onLogout, authenticatedUser }) => {
   return (
     <div className='nav-body'>
       <nav className="navbar fixed-top navbar-expand-lg navbar-light bg-dark">
         <img src="img/Logo.png" alt="Logo" />
-        <a className="navbar-brand" href="/">So You Think You Can Ball?</a>
+        <Link className="navbar-brand" to="/">So You Think You Can Ball?</Link>
         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ml-auto">
             <li className="nav-item">
-              <a className="nav-link" href="/profile">Profile</a>
+              <Link className="nav-link" to="/profile">Profile</Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/team">Team</a>
+              <Link className="nav-link" to="/team">Team</Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/agency">Free Agency</a>
+              <Link className="nav-link" to="/agency">Free Agency</Link>
             </li>
-            <li className="nav-item">
-              <a className="nav-link signin" href="/signin">Sign in</a>
-            </li>
+            {authenticatedUser ? (
+              <li className="nav-item">
+                <button className="nav-link logout-btn" onClick={onLogout}>Logout</button>
+              </li>
+            ) : (
+              <li className="nav-item">
+                <Link className="nav-link signin" to="/signin">Sign in</Link>
+              </li>
+            )}
           </ul>
         </div>
       </nav>
