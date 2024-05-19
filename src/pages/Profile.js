@@ -36,7 +36,7 @@ const Profile = ({ user, updateUser }) => {
           <section className="profile-pic">
             <img
               src={formData.img || defaultImage}
-              alt={`Picture of ${formData.firstName}`}
+              alt={`${formData.firstName}`}
               style={{ width: '200px', height: '200px' }}
             />
             <input
@@ -166,7 +166,7 @@ const Profile = ({ user, updateUser }) => {
           <section className="profile-pic">
             <img
               src={user.img || defaultImage}
-              alt={`Picture of ${user.firstName}`}
+              alt={`${user.firstName}`}
               style={{ width: '200px', height: '200px' }}
             />
           </section>

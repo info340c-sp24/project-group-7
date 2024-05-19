@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
-import './team.css';
+import './team.css'
 
 export default function Agency({ data }) {
   const [sortByCriteria, setSortByCriteria] = useState(null);

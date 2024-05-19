@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Navbar from './Navbar';
-import Home from './Home';
-import Profile from './Profile';
-import Footer from './Footer';
-import Team from './Team';
-import Agency from './Agency';
-import Signin from './Signin';
-import './style.css';
-import profilesData from '../data/profiles.json';
+import Navbar from './components/Navbar';
+import Home from './pages/Home';
+import Profile from './pages/Profile';
+import Footer from './components/Footer';
+import Team from './pages/Team';
+import Agency from './pages/Agency';
+import Signin from './pages/Signin';
+import './style.css'
+import profilesData from './data/profiles.json';
 
 const App = () => {
   const [authenticatedUser, setAuthenticatedUser] = useState(() => {

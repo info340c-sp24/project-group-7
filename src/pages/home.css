@@ -45,7 +45,7 @@ body {
 
 @media (min-width: 992px) {
     body {
-        background-image: url('./img/bg-large.jpg');
+        background-image: url('../components/img/bg-large.jpg');
         background-repeat: no-repeat;
         background-position: center;
         background-size: cover;
