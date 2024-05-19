@@ -6,6 +6,7 @@ import './team.css';
 export default function Agency({ data }) {
   const [sortByCriteria, setSortByCriteria] = useState(null);
   const [isAscending, setIsAscending] = useState(null);
+  const [selectedPosition, setSelectedPosition] = useState('');
 
   const handleClick = (event) => {
     const { name } = event.currentTarget;
@@ -25,6 +26,10 @@ export default function Agency({ data }) {
     }
   };
 
+  const handlePositionChange = (event) => {
+    setSelectedPosition(event.target.value);
+  };
+
   let sortedData = [...data];
   if (sortByCriteria) {
     sortedData = _.sortBy(sortedData, sortByCriteria);
@@ -33,10 +38,21 @@ export default function Agency({ data }) {
     }
   }
 
-  const filteredData = sortedData.filter((user) => user.team === null);
+  const filteredData = sortedData.filter((user) => user.team === null && (selectedPosition === '' || user.position === selectedPosition));
 
   return (
     <div className="table-responsive">
+      <div className="filter-container">
+        <label htmlFor="position-filter">Filter by Position:</label>
+        <select id="position-filter" value={selectedPosition} onChange={handlePositionChange}>
+          <option value="">None</option>
+          <option value="PG">PG</option>
+          <option value="SG">SG</option>
+          <option value="SF">SF</option>
+          <option value="PF">PF</option>
+          <option value="C">C</option>
+        </select>
+      </div>
       <table className="table w-100">
         <thead>
           <tr>

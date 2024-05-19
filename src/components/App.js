@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import Home from './Home';
 import Profile from './Profile';
@@ -16,7 +16,6 @@ const App = () => {
     return user ? JSON.parse(user) : null;
   });
   const [currentTeam, setCurrentTeam] = useState(authenticatedUser ? authenticatedUser.team : null);
-
 
   useEffect(() => {
     if (authenticatedUser) {
@@ -56,7 +55,10 @@ const App = () => {
           path="/profile" 
           element={<Profile user={authenticatedUser} updateUser={updateUser} />} 
         />
-        <Route path="/team" element={<Team data={profilesData} currentTeam={currentTeam} setCurrentTeam={setCurrentTeam} />} />
+        <Route 
+          path="/team" 
+          element={authenticatedUser ? <Team data={profilesData} currentTeam={currentTeam} setCurrentTeam={setCurrentTeam} /> : <Navigate to="/signin" />} 
+        />
         <Route path="/agency" element={<Agency data={profilesData} />} />
         <Route path="/signin" element={<Signin onLogin={handleLogin} authenticatedUser={authenticatedUser} />} />
       </Routes>

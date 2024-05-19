@@ -1,8 +1,5 @@
 body {
-    background-image: url('./img/bg-small.jpg');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
+    background-image: none;
 }
 
 .container {

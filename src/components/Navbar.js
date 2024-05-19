@@ -1,7 +1,20 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 const Navbar = ({ onLogout, authenticatedUser }) => {
+  const navbarNavRef = useRef(null);
+
+  const handleCollapse = () => {
+    if (navbarNavRef.current && navbarNavRef.current.classList.contains('show')) {
+      navbarNavRef.current.classList.remove('show');
+    }
+  };
+
+  const handleLogout = () => {
+    handleCollapse();
+    onLogout();
+  };
+
   return (
     <div className='nav-body'>
       <nav className="navbar fixed-top navbar-expand-lg navbar-light bg-dark">
@@ -10,24 +23,24 @@ const Navbar = ({ onLogout, authenticatedUser }) => {
         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
         </button>
-        <div className="collapse navbar-collapse" id="navbarNav">
+        <div className="collapse navbar-collapse" id="navbarNav" ref={navbarNavRef}>
           <ul className="navbar-nav ml-auto">
             <li className="nav-item">
-              <Link className="nav-link" to="/profile">Profile</Link>
+              <Link className="nav-link" to="/profile" onClick={handleCollapse}>Profile</Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/team">Team</Link>
+              <Link className="nav-link" to="/team" onClick={handleCollapse}>Team</Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/agency">Free Agency</Link>
+              <Link className="nav-link" to="/agency" onClick={handleCollapse}>Free Agency</Link>
             </li>
             {authenticatedUser ? (
               <li className="nav-item">
-                <button className="nav-link logout-btn" onClick={onLogout}>Logout</button>
+                <button className="nav-link logout-btn" onClick={handleLogout}>Logout</button>
               </li>
             ) : (
               <li className="nav-item">
-                <Link className="nav-link signin" to="/signin">Sign in</Link>
+                <Link className="nav-link signin" to="/signin" onClick={handleCollapse}>Sign in</Link>
               </li>
             )}
           </ul>
