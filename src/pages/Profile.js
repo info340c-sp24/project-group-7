@@ -5,7 +5,7 @@ import './profile.css';
 const Profile = ({ user, updateUser }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(user ? { ...user } : {});
-  const defaultImage = '../img/pfp.jpg';
+  const defaultImage = 'img/pfp.jpg';
 
   if (!user) {
     return <Navigate to="/signin" />;
