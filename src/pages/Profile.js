@@ -28,7 +28,7 @@ const Profile = ({ user, updateUser }) => {
     setFormData({ ...user });
     setIsEditing(false);
   };
-
+//
   return (
     <div>
       {isEditing ? (
