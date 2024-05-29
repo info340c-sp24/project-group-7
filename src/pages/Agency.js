@@ -4,6 +4,7 @@ import _ from 'lodash';
 import './team.css'
 
 export default function Agency({ data }) {
+  console.log('Agency data being passed on: ', data);
   const [sortByCriteria, setSortByCriteria] = useState(null);
   const [isAscending, setIsAscending] = useState(null);
   const [selectedPosition, setSelectedPosition] = useState('');

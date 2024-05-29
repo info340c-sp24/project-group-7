@@ -1,11 +1,66 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
+import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
 import './profile.css';
 
-const Profile = ({ user, updateUser }) => {
+const Profile = ({ user, updateUser, authenticatedUser }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(user ? { ...user } : {});
   const defaultImage = 'img/pfp.jpg';
+
+  //firestore save
+  const saveProfile = async () => {
+    const db = getFirestore();
+    const userRef = doc(db, "Ball", authenticatedUser.uid);
+  
+    try {
+      await setDoc(userRef, formData);
+      console.log("Profile saved successfully!");
+    } catch (error) {
+      console.error("Error saving profile: ", error);
+    }
+  };
+
+
+  useEffect(() => {
+  const fetchProfile = async () => {
+    const db = getFirestore();
+    const userRef = doc(db, "Ball", authenticatedUser.uid);
+    const docSnap = await getDoc(userRef);
+
+    if (docSnap.exists()) {
+      setFormData(docSnap.data());
+    } else {
+      // If the user doesn't have a profile, prompt them to create one
+      setIsEditing(true);
+    }
+  };
+
+  if (authenticatedUser) {
+    fetchProfile();
+  }
+}, [authenticatedUser]);useEffect(() => {
+  const fetchProfile = async () => {
+    const db = getFirestore();
+    const userRef = doc(db, "Ball", authenticatedUser.uid);
+    const docSnap = await getDoc(userRef);
+
+    if (docSnap.exists()) {
+      setFormData(docSnap.data());
+    } else {
+      // If the user doesn't have a profile, prompt them to create one
+      setIsEditing(true);
+    }
+  };
+
+  if (authenticatedUser) {
+    fetchProfile();
+  }
+}, [authenticatedUser]);
+
+
+
+  //
 
   if (!user) {
     return <Navigate to="/signin" />;
@@ -19,10 +74,17 @@ const Profile = ({ user, updateUser }) => {
     });
   };
 
+  // Old handle save
+  // const handleSave = () => {
+  //   updateUser(formData);
+  //   setIsEditing(false);
+  // };
+  //firestore handle save
   const handleSave = () => {
-    updateUser(formData);
+    saveProfile();
     setIsEditing(false);
   };
+  //
 
   const handleCancel = () => {
     setFormData({ ...user });
