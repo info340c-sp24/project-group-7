@@ -7,6 +7,14 @@
   align-items: center;
   height: 60vh;
 }
+.input-field-pass {
+  width: 100%;
+ 
+}
+
+.input-field {
+  width: 100%;
+}
 
 .signin-container {
   background-color: #fff;
@@ -40,6 +48,18 @@
   border-radius: 4px;
   cursor: pointer;
   width: 100%;
+}
+
+.google-btn {
+  background-color: #5cb85c;
+  color: white;
+  
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 8px;
 }
 
 .btn:hover {

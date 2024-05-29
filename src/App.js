@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from './firebase';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
@@ -16,6 +18,7 @@ const App = () => {
     return user ? JSON.parse(user) : null;
   });
   const [currentTeam, setCurrentTeam] = useState(authenticatedUser ? authenticatedUser.team : null);
+  const [loginError, setLoginError] = useState(null);
 
   useEffect(() => {
     if (authenticatedUser) {
@@ -27,10 +30,16 @@ const App = () => {
     }
   }, [authenticatedUser]);
 
-  const handleLogin = (username) => {
-    const user = profilesData.find(profile => profile.username === username);
-    if (user) {
+  const handleLogin = async (email, password) => {
+    const auth = getAuth();
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
       setAuthenticatedUser(user);
+      setLoginError(null); // clear any previous error
+    } catch (error) {
+      console.error(error);
+      setLoginError(error.message);
     }
   };
 
@@ -43,6 +52,18 @@ const App = () => {
     const userIndex = profilesData.findIndex(profile => profile.username === updatedUser.username);
     if (userIndex !== -1) {
       profilesData[userIndex] = updatedUser;
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    const provider = new GoogleAuthProvider();
+    const auth = getAuth();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      setAuthenticatedUser(user);
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -60,7 +81,8 @@ const App = () => {
           element={authenticatedUser ? <Team data={profilesData} currentTeam={currentTeam} setCurrentTeam={setCurrentTeam} /> : <Navigate to="/signin" />} 
         />
         <Route path="/agency" element={<Agency data={profilesData} />} />
-        <Route path="/signin" element={<Signin onLogin={handleLogin} authenticatedUser={authenticatedUser} />} />
+        <Route path="/signin" element={<Signin onLogin={handleLogin} onGoogleLogin={handleGoogleLogin} authenticatedUser={authenticatedUser} />} />
+
       </Routes>
       <Footer />
     </Router>

@@ -10,7 +10,7 @@ const Home = () => {
                         <div className="card text-center">
                             <div className="card-body">
                                 <h5 className="card-title"><a href="profile">Profile</a></h5>
-                                <p className="card-text">Create and manage your own personal profile to let others know more about you and how you play</p>
+                                <p className="card-text">Create and manage your own personal profile! Show how you play!</p>
                                 <img src="img/profile.png" alt="Profile Icon" />
                             </div>
                         </div>
