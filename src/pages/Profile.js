@@ -30,7 +30,7 @@ const Profile = ({ user, updateUser }) => {
   };
 //
   return (
-    <div className="body-profile">
+    <div className='profile'>
       {isEditing ? (
         <form>
           <section className="profile-pic">
@@ -48,7 +48,7 @@ const Profile = ({ user, updateUser }) => {
             />
           </section>
 
-          <section className="Bio">
+          <section className="bio">
             <h2>Basketball Experience</h2>
             <input
               type="text"
@@ -58,7 +58,7 @@ const Profile = ({ user, updateUser }) => {
             />
           </section>
 
-          <section className="BioData">
+          <section className="bio-data">
             <h2>Height</h2>
             <input
               type="text"
@@ -82,7 +82,7 @@ const Profile = ({ user, updateUser }) => {
             />
           </section>
 
-          <section className="Stats">
+          <section className="stats">
             <h2>Statistics</h2>
             <ul>
               <li>
