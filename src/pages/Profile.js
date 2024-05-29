@@ -5,6 +5,7 @@ import './profile.css';
 
 const Profile = ({ user, updateUser, authenticatedUser }) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [isEditClicked, setIsEditClicked] = useState(false);
   const [formData, setFormData] = useState(user ? { ...user } : {});
   const defaultImage = 'img/pfp.jpg';
 
@@ -16,6 +17,7 @@ const Profile = ({ user, updateUser, authenticatedUser }) => {
     try {
       await setDoc(userRef, formData);
       console.log("Profile saved successfully!");
+      await setDoc(formData);
     } catch (error) {
       console.error("Error saving profile: ", error);
     }
@@ -28,8 +30,8 @@ const Profile = ({ user, updateUser, authenticatedUser }) => {
     const userRef = doc(db, "Ball", authenticatedUser.uid);
     const docSnap = await getDoc(userRef);
 
-    if (docSnap.exists()) {
-      
+    if (docSnap.exists() && !isEditClicked){
+      const data = docSnap.data();
       updateUser(docSnap.data());
       setFormData(docSnap.data());
     } else {
@@ -40,7 +42,7 @@ const Profile = ({ user, updateUser, authenticatedUser }) => {
   if (authenticatedUser) {
     fetchProfile();
   }
-}, [authenticatedUser]);
+}, [authenticatedUser, updateUser, isEditClicked]);
 
 
 
@@ -250,7 +252,7 @@ const Profile = ({ user, updateUser, authenticatedUser }) => {
             <p>Phone: {user.phone || 'Not Provided'}</p>
           </section>
 
-          <button type="button" onClick={() => setIsEditing(true)}>
+          <button type="button" onClick={() => {setIsEditing(true);setIsEditClicked(true);}}>
             Edit Profile
           </button>
         </div>
