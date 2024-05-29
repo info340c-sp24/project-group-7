@@ -29,27 +29,11 @@ const Profile = ({ user, updateUser, authenticatedUser }) => {
     const docSnap = await getDoc(userRef);
 
     if (docSnap.exists()) {
+      
+      updateUser(docSnap.data());
       setFormData(docSnap.data());
     } else {
-      // If the user doesn't have a profile, prompt them to create one
-      setIsEditing(true);
-    }
-  };
-
-  if (authenticatedUser) {
-    fetchProfile();
-  }
-}, [authenticatedUser]);useEffect(() => {
-  const fetchProfile = async () => {
-    const db = getFirestore();
-    const userRef = doc(db, "Ball", authenticatedUser.uid);
-    const docSnap = await getDoc(userRef);
-
-    if (docSnap.exists()) {
-      setFormData(docSnap.data());
-    } else {
-      // If the user doesn't have a profile, prompt them to create one
-      setIsEditing(true);
+      setIsEditing(true); //edit profile
     }
   };
 
@@ -60,7 +44,8 @@ const Profile = ({ user, updateUser, authenticatedUser }) => {
 
 
 
-  //
+
+  // end of firestore code added
 
   if (!user) {
     return <Navigate to="/signin" />;
