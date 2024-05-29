@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-
+import "./signin.css"
 const Signin = ({ onLogin, authenticatedUser }) => {
   if (authenticatedUser) {
     return <Navigate to="/profile" />;
@@ -13,6 +13,7 @@ const Signin = ({ onLogin, authenticatedUser }) => {
   };
 
   return (
+    <div className="signin-body">
     <div className="signin-container">
       <div className="signin-content">
         <h2>Sign In</h2>
@@ -28,6 +29,7 @@ const Signin = ({ onLogin, authenticatedUser }) => {
           <button type="submit" className="btn">Sign In</button>
         </form>
       </div>
+    </div>
     </div>
   );
 }

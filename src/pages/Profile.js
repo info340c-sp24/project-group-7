@@ -30,7 +30,7 @@ const Profile = ({ user, updateUser }) => {
   };
 //
   return (
-    <div>
+    <div className="body-profile">
       {isEditing ? (
         <form>
           <section className="profile-pic">

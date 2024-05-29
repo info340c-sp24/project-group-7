@@ -41,6 +41,7 @@ export default function Agency({ data }) {
   const filteredData = sortedData.filter((user) => user.team === null && (selectedPosition === '' || user.position === selectedPosition));
 
   return (
+    <div className="agency-body">
     <div className="table-responsive">
       <div className="filter-container">
         <label htmlFor="position-filter">Filter by Position:</label>
@@ -173,7 +174,9 @@ export default function Agency({ data }) {
         </tbody>
       </table>
     </div>
+    </div>
   );
+  
 }
 
 function SortButton(props) {
