@@ -4,7 +4,7 @@ html {
 }
 
 .nav-body {
-    padding-bottom: 3%;
+    padding-bottom: 4%;
 }
 
 nav {
@@ -27,7 +27,7 @@ nav img {
     text-decoration: none;
 }
 
-.signin, .logout-btn {
+.signin-btn, .logout-btn {
     background-color: #4CAF50;
     color: white;
     padding: 10px 20px;
@@ -38,7 +38,7 @@ nav img {
     width: 100%;
 }
 
-.signin:hover, .logout-btn:hover {
+.signin-btn:hover, .logout-btn:hover {
     background-color: #45a049;
     color: white !important;
 }
@@ -125,6 +125,14 @@ footer {
 
     nav img {
         width: 4rem;
+    }
+    
+    body {
+        background-image: url('./img/bg-large.jpg');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+        background-attachment: fixed;
     }
 }
 

@@ -1,43 +1,35 @@
-body {
-    background-image: none;
-}
-
-.container {
-    padding-top: 10px;
-}
-
-.card-container {
+.home .card-container {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.card-title {
+.home .card-title {
     font-family: "Graduate";
     font-size: 20px;
     font-weight: bold;
 }
 
-.card-body a {
+.home .card-body a {
     text-decoration: none;
     color: black;
 }
 
-.card-body a:hover {
+.home .card-body a:hover {
     color: #45a049;
 }
 
-.card-text {
+.home .card-text {
     font-size: 16px;
 }
 
-.card-body img {
+.home .card-body img {
     width: 5rem;
     height: auto;
 }
 
 @media (min-width: 768px) {
-    .card-body img {
+    .home .card-body img {
         width: 6rem;
         height: auto;
     }
@@ -49,9 +41,10 @@ body {
         background-repeat: no-repeat;
         background-position: center;
         background-size: cover;
+        background-attachment: fixed;
     }
 
-    .card-body img {
+    .home .card-body img {
         width: 7rem;
         height: auto;
     }

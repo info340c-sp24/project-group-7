@@ -1,38 +1,29 @@
-html {
-    height: 100%;
-    font-family: 'Roboto', Arial, sans-serif;
-}
 .noTeam {
     color: white;
 }
 
-.teamMessageContainer {
+.team-header {
     background-color: white;
     color: black;
     width: 100%;
     padding: 30px;
     box-sizing: border-box;
-}
-
-body{
-    text-align: center;
-    padding-top: 80px;
-}
-
-.head{
     font-weight: 300;
     font-family: "Roboto", sans-serif;
+}
+
+.team {
     text-align: center;
 }
 
-.table{
+.team .table{
     width: 50%;
     margin-left: auto;
     margin-right: auto;
     border-collapse: collapse;
 }
 
-th{
+.team th{
     height: 2rem;
     text-align: center;
     color: #009133;
@@ -40,19 +31,20 @@ th{
     
 }
 
-.atr th{
+.team.atr th{
     height: 2rem;
     text-align: center;
     color: #004491;
     background-color:#d3d3d3 ;
 
 }
-.cover {
+
+.team.cover {
     width: 100px;
     height: 100px;
 }
 
-th, td {
+.team th, td {
     padding: 0.5em;
     border-bottom: 1px solid #d3d3d3;
     text-align: center;

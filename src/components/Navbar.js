@@ -40,7 +40,7 @@ const Navbar = ({ onLogout, authenticatedUser }) => {
               </li>
             ) : (
               <li className="nav-item">
-                <Link className="nav-link signin" to="/signin" onClick={handleCollapse}>Sign in</Link>
+                <Link className="nav-link signin-btn" to="/signin" onClick={handleCollapse}>Sign in</Link>
               </li>
             )}
           </ul>
