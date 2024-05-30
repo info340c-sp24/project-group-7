@@ -3,51 +3,30 @@ import { Navigate } from 'react-router-dom';
 import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
 import './profile.css';
 
-const Profile = ({ user, updateUser, authenticatedUser }) => {
+const Profile = ({ user, authenticatedUser }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isEditClicked, setIsEditClicked] = useState(false);
   const [formData, setFormData] = useState(user ? { ...user } : {});
   const defaultImage = 'img/pfp.jpg';
 
-  //firestore save
-  const saveProfile = async () => {
-    const db = getFirestore();
-    const userRef = doc(db, "Ball", authenticatedUser.uid);
-  
-    try {
-      await setDoc(userRef, formData);
-      console.log("Profile saved successfully!");
-      await setDoc(formData);
-    } catch (error) {
-      console.error("Error saving profile: ", error);
-    }
-  };
-
-
   useEffect(() => {
-  const fetchProfile = async () => {
-    const db = getFirestore();
-    const userRef = doc(db, "Ball", authenticatedUser.uid);
-    const docSnap = await getDoc(userRef);
+    if (authenticatedUser) {
+      const fetchProfile = async () => {
+        const db = getFirestore();
+        const userRef = doc(db, "Ball", authenticatedUser.uid);
+        const docSnap = await getDoc(userRef);
 
-    if (docSnap.exists() && !isEditClicked){
-      const data = docSnap.data();
-      updateUser(docSnap.data());
-      setFormData(docSnap.data());
-    } else {
-      setIsEditing(true); //edit profile
+        if (docSnap.exists() && !isEditClicked){
+          const data = docSnap.data();
+          setFormData(data);
+        } else {
+          setIsEditing(true);
+        }
+      };
+
+      fetchProfile();
     }
-  };
-
-  if (authenticatedUser) {
-    fetchProfile();
-  }
-}, [authenticatedUser, updateUser, isEditClicked]);
-
-
-
-
-  // end of firestore code added
+  }, [authenticatedUser, isEditClicked]);
 
   if (!user) {
     return <Navigate to="/signin" />;
@@ -57,27 +36,33 @@ const Profile = ({ user, updateUser, authenticatedUser }) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value,
+      [name]: e.target.type === 'number' ? Number(value) : value,
     });
   };
 
-  // Old handle save
-  // const handleSave = () => {
-  //   updateUser(formData);
-  //   setIsEditing(false);
-  // };
-  //firestore handle save
-  const handleSave = () => {
-    saveProfile();
-    setIsEditing(false);
+  const saveProfile = async () => {
+    const db = getFirestore();
+    const userRef = doc(db, "Ball", authenticatedUser.uid);
+  
+    try {
+      await setDoc(userRef, formData);
+      console.log("Profile saved successfully!");
+    } catch (error) {
+      console.error("Error saving profile: ", error);
+    }
   };
-  //
+
+  const handleSave = async () => {
+    await saveProfile();
+    setIsEditing(false);
+    setFormData(formData);
+  };
 
   const handleCancel = () => {
-    setFormData({ ...user });
+    setFormData(user);
     setIsEditing(false);
   };
-//
+
   return (
     <div className='profile'>
       {isEditing ? (
@@ -108,23 +93,23 @@ const Profile = ({ user, updateUser, authenticatedUser }) => {
           </section>
 
           <section className="bio-data">
-            <h2>Height</h2>
+            <h2>Height (in)</h2>
             <input
-              type="text"
+              type="number"
               name="height"
               value={formData.height || ''}
               onChange={handleInputChange}
             />
-            <h2>Weight</h2>
+            <h2>Weight (lb)</h2>
             <input
-              type="text"
+              type="number"
               name="weight"
               value={formData.weight || ''}
               onChange={handleInputChange}
             />
-            <h2>Wingspan</h2>
+            <h2>Wingspan (in)</h2>
             <input
-              type="text"
+              type="number"
               name="wingspan"
               value={formData.wingspan || ''}
               onChange={handleInputChange}
@@ -139,7 +124,7 @@ const Profile = ({ user, updateUser, authenticatedUser }) => {
                 <input
                   type="number"
                   name="games"
-                  value={formData.games}
+                  value={formData.games || ''}
                   onChange={handleInputChange}
                 />
               </li>
@@ -148,7 +133,7 @@ const Profile = ({ user, updateUser, authenticatedUser }) => {
                 <input
                   type="number"
                   name="points"
-                  value={formData.points}
+                  value={formData.points || ''}
                   onChange={handleInputChange}
                 />
               </li>
@@ -157,7 +142,7 @@ const Profile = ({ user, updateUser, authenticatedUser }) => {
                 <input
                   type="number"
                   name="assists"
-                  value={formData.assists}
+                  value={formData.assists || ''}
                   onChange={handleInputChange}
                 />
               </li>
@@ -166,7 +151,7 @@ const Profile = ({ user, updateUser, authenticatedUser }) => {
                 <input
                   type="number"
                   name="rebounds"
-                  value={formData.rebounds}
+                  value={formData.rebounds || ''}
                   onChange={handleInputChange}
                 />
               </li>
@@ -175,7 +160,7 @@ const Profile = ({ user, updateUser, authenticatedUser }) => {
                 <input
                   type="number"
                   name="steals"
-                  value={formData.steals}
+                  value={formData.steals || ''}
                   onChange={handleInputChange}
                 />
               </li>
@@ -184,14 +169,14 @@ const Profile = ({ user, updateUser, authenticatedUser }) => {
                 <input
                   type="number"
                   name="blocks"
-                  value={formData.blocks}
+                  value={formData.blocks || ''}
                   onChange={handleInputChange}
                 />
               </li>
             </ul>
           </section>
 
-          <section className="Contact-info">
+          <section className="contact-info">
             <h2>Contact Information</h2>
             <p>Email: {formData.email}</p>
             <input
@@ -220,12 +205,12 @@ const Profile = ({ user, updateUser, authenticatedUser }) => {
             />
           </section>
 
-          <section className="Bio">
+          <section className="bio">
             <h2>Basketball Experience</h2>
             <p>{user.experience || 'Not Provided'}</p>
           </section>
 
-          <section className="BioData">
+          <section className="bio-data">
             <h2>Height</h2>
             <p>{user.height || 'Not Provided'}</p>
             <h2>Weight</h2>
@@ -234,7 +219,7 @@ const Profile = ({ user, updateUser, authenticatedUser }) => {
             <p>{user.wingspan || 'Not Provided'}</p>
           </section>
 
-          <section className="Stats">
+          <section className="stats">
             <h2>Statistics</h2>
             <ul>
               <li>Games played: {user.games || 0}</li>
@@ -246,13 +231,13 @@ const Profile = ({ user, updateUser, authenticatedUser }) => {
             </ul>
           </section>
 
-          <section className="Contact-info">
+          <section className="contact-info">
             <h2>Contact Information</h2>
             <p>Email: {user.email || 'Not Provided'}</p>
             <p>Phone: {user.phone || 'Not Provided'}</p>
           </section>
 
-          <button type="button" onClick={() => {setIsEditing(true);setIsEditClicked(true);}}>
+          <button type="button" onClick={() => { setIsEditing(true); setIsEditClicked(true); }}>
             Edit Profile
           </button>
         </div>
