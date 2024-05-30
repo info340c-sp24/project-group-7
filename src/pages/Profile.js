@@ -9,6 +9,7 @@ const Profile = ({ user, authenticatedUser }) => {
   const [formData, setFormData] = useState(user ? { ...user } : {});
   const defaultImage = 'img/pfp.jpg';
 
+  //firebase
   useEffect(() => {
     if (authenticatedUser) {
       const fetchProfile = async () => {
@@ -51,6 +52,7 @@ const Profile = ({ user, authenticatedUser }) => {
       console.error("Error saving profile: ", error);
     }
   };
+  //
 
   const handleSave = async () => {
     await saveProfile();
