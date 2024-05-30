@@ -12,7 +12,7 @@ const Signin = ({ onLogin, onGoogleLogin, authenticatedUser }) => {
     return <Navigate to="/profile" />;
   }
 
-   const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
   e.preventDefault();
   const { email, password } = e.target.elements;
   try {
@@ -28,7 +28,8 @@ const handleSignUp = async (e) => {
   e.preventDefault();
   const { newEmail, newPassword } = e.target.elements;
   try {
-    onLogin(newEmail.value, newPassword.value);
+    // Use createUserWithEmailAndPassword for sign-up
+    await createUserWithEmailAndPassword(getAuth(), newEmail.value, newPassword.value);
     setSignUpError(null); // clear any previous error
   } catch (error) {
     console.error(error);
