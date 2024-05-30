@@ -9,35 +9,48 @@ const Profile = ({ user, updateUser, authenticatedUser }) => {
   const [formData, setFormData] = useState(user ? { ...user } : {});
   const defaultImage = 'img/pfp.jpg';
 
+  //test for UID
+  console.log('printing authenticatedUser output: ', authenticatedUser);
+  console.log('printing authenticatedUser UID: ', authenticatedUser.uid);
+  console.log('user UID: ', user.uid);
+
   //firestore save
   const saveProfile = async () => {
-    const db = getFirestore();
-    const userRef = doc(db, "Ball", authenticatedUser.uid);
+    if (authenticatedUser && authenticatedUser.uid) {
+      const db = getFirestore();
+      const userRef = doc(db, 'Ball', authenticatedUser.uid);
   
-    try {
-      await setDoc(userRef, formData);
-      console.log("Profile saved successfully!");
-      await setDoc(formData);
-    } catch (error) {
-      console.error("Error saving profile: ", error);
+      try {
+        await setDoc(userRef, formData);
+        console.log('Profile saved successfully!');
+        updateUser(formData); // Update local state
+      } catch (error) {
+        console.error('Error saving profile: ', error);
+      }
+    } else {
+      console.log('save failed');
     }
   };
-
+  
 
   useEffect(() => {
-  const fetchProfile = async () => {
-    const db = getFirestore();
-    const userRef = doc(db, "Ball", authenticatedUser.uid);
-    const docSnap = await getDoc(userRef);
-
-    if (docSnap.exists() && !isEditClicked){
-      const data = docSnap.data();
-      updateUser(docSnap.data());
-      setFormData(docSnap.data());
-    } else {
-      setIsEditing(true); //edit profile
-    }
-  };
+    const fetchProfile = async () => {
+      if (authenticatedUser && authenticatedUser.uid) {
+        const db = getFirestore();
+        const userRef = doc(db, "Ball", authenticatedUser.uid);
+        const docSnap = await getDoc(userRef);
+    
+        if (docSnap.exists() && !isEditClicked){
+          const data = docSnap.data();
+          updateUser(docSnap.data());
+          setFormData(docSnap.data());
+        } else {
+          setIsEditing(true); //edit profile
+        }
+      } else {
+        console.log('error, user auth id is invalid');
+      }
+    };
 
   if (authenticatedUser) {
     fetchProfile();
@@ -69,6 +82,7 @@ const Profile = ({ user, updateUser, authenticatedUser }) => {
   //firestore handle save
   const handleSave = () => {
     saveProfile();
+    updateUser(formData);
     setIsEditing(false);
   };
   //
@@ -77,7 +91,8 @@ const Profile = ({ user, updateUser, authenticatedUser }) => {
     setFormData({ ...user });
     setIsEditing(false);
   };
-//
+
+
   return (
     <div className='profile'>
       {isEditing ? (

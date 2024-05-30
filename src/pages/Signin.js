@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import './signin.css';
 
 const Signin = ({ onLogin, onGoogleLogin, authenticatedUser }) => {
@@ -27,15 +28,31 @@ const Signin = ({ onLogin, onGoogleLogin, authenticatedUser }) => {
 const handleSignUp = async (e) => {
   e.preventDefault();
   const { newEmail, newPassword } = e.target.elements;
+  const auth = getAuth();
+  const db = getFirestore();
+
   try {
-    // Use createUserWithEmailAndPassword for sign-up
-    await createUserWithEmailAndPassword(getAuth(), newEmail.value, newPassword.value);
+    const userCredential = await createUserWithEmailAndPassword(auth, newEmail.value, newPassword.value);
+    const user = userCredential.user;
+
+    // Store additional user data in Firestore using the uid
+    await setDoc(doc(db, 'Ball', authenticatedUser.uid), {
+      // Add any user data to store
+      email: newEmail.value,
+      //uid: user.uid.value,
+      
+      
+    });
+    console.log('user UID: ', authenticatedUser.uid);
+    console.log('user UID: ', user.uid);
+
     setSignUpError(null); // clear any previous error
   } catch (error) {
     console.error(error);
     setSignUpError(error.message);
   }
-};
+}; 
+
 
   return (
     <div className='signin'>

@@ -107,8 +107,7 @@ const App = () => {
     } catch (error) {
       console.error(error);
     }
-  };
-
+  };  
   // console.log('profiles data being passed on: ', profilesData);
   return (
     <Router>
