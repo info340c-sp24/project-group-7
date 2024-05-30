@@ -1,11 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
+import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
 import './profile.css';
 
-const Profile = ({ user, updateUser }) => {
+const Profile = ({ user, updateUser, authenticatedUser }) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [isEditClicked, setIsEditClicked] = useState(false);
   const [formData, setFormData] = useState(user ? { ...user } : {});
   const defaultImage = 'img/pfp.jpg';
+
+  //firestore save
+  const saveProfile = async () => {
+    const db = getFirestore();
+    const userRef = doc(db, "Ball", authenticatedUser.uid);
+  
+    try {
+      await setDoc(userRef, formData);
+      console.log("Profile saved successfully!");
+      await setDoc(formData);
+    } catch (error) {
+      console.error("Error saving profile: ", error);
+    }
+  };
+
+
+  useEffect(() => {
+  const fetchProfile = async () => {
+    const db = getFirestore();
+    const userRef = doc(db, "Ball", authenticatedUser.uid);
+    const docSnap = await getDoc(userRef);
+
+    if (docSnap.exists() && !isEditClicked){
+      const data = docSnap.data();
+      updateUser(docSnap.data());
+      setFormData(docSnap.data());
+    } else {
+      setIsEditing(true); //edit profile
+    }
+  };
+
+  if (authenticatedUser) {
+    fetchProfile();
+  }
+}, [authenticatedUser, updateUser, isEditClicked]);
+
+
+
+
+  // end of firestore code added
 
   if (!user) {
     return <Navigate to="/signin" />;
@@ -19,16 +61,23 @@ const Profile = ({ user, updateUser }) => {
     });
   };
 
+  // Old handle save
+  // const handleSave = () => {
+  //   updateUser(formData);
+  //   setIsEditing(false);
+  // };
+  //firestore handle save
   const handleSave = () => {
-    updateUser(formData);
+    saveProfile();
     setIsEditing(false);
   };
+  //
 
   const handleCancel = () => {
     setFormData({ ...user });
     setIsEditing(false);
   };
-
+//
   return (
     <div className='profile'>
       {isEditing ? (
@@ -203,7 +252,7 @@ const Profile = ({ user, updateUser }) => {
             <p>Phone: {user.phone || 'Not Provided'}</p>
           </section>
 
-          <button type="button" onClick={() => setIsEditing(true)}>
+          <button type="button" onClick={() => {setIsEditing(true);setIsEditClicked(true);}}>
             Edit Profile
           </button>
         </div>
