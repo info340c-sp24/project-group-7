@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword } from 'firebase/auth';
-import { getFirestore, collection, getDocs, query, where } from "firebase/firestore"; 
+import { getFirestore, collection, getDocs, query, where, doc, getDoc } from "firebase/firestore"; 
 import { auth } from './firebase';
 import { ref, onValue } from "firebase/database";
 import { database } from "./firebase";
@@ -40,7 +40,10 @@ const App = () => {
   useEffect(() => {
     if (authenticatedUser) {
       sessionStorage.setItem('authenticatedUser', JSON.stringify(authenticatedUser));
-      setCurrentTeam(authenticatedUser.team);
+      //setCurrentTeam(authenticatedUser.team);
+
+      console.log("current team being passed as prop: ", authenticatedUser.team);
+      console.log("current AUTH user being passed as prop: ", authenticatedUser);
     } else {
       sessionStorage.removeItem('authenticatedUser');
       setCurrentTeam(null);
@@ -50,15 +53,19 @@ const App = () => {
   const handleLogin = async (identifier, password) => {
     const auth = getAuth();
     const db = getFirestore();
-
+  
     const isEmail = (str) => /\S+@\S+\.\S+/.test(str);
-
+  
     if (isEmail(identifier)) {
       // Login with email
       try {
         const userCredential = await signInWithEmailAndPassword(auth, identifier, password);
         const user = userCredential.user;
+        const userRef = doc(db, "Ball", user.uid);
+        const userDoc = await getDoc(userRef);
+        const userData = userDoc.data();
         setAuthenticatedUser(user);
+        setCurrentTeam(userData?.team || null); // Set currentTeam based on the user's data
         setLoginError(null); // Clear any previous error
       } catch (error) {
         console.error(error);
@@ -70,15 +77,16 @@ const App = () => {
         const usersCollection = collection(db, "Ball");
         const q = query(usersCollection, where("username", "==", identifier));
         const querySnapshot = await getDocs(q);
-
+  
         if (!querySnapshot.empty) {
           const userDoc = querySnapshot.docs[0];
           const userData = userDoc.data();
           const email = userData.email;
-
+  
           const userCredential = await signInWithEmailAndPassword(auth, email, password);
           const user = userCredential.user;
           setAuthenticatedUser(user);
+          setCurrentTeam(userData?.team || null); // Set currentTeam based on the user's data
           setLoginError(null); // Clear any previous error
         } else {
           setLoginError("Username not found");
@@ -113,7 +121,7 @@ const App = () => {
       profilesData[userIndex] = updatedUser;
     }
   };
-
+  console.log("CURRENTTEAM",currentTeam);
   return (
     <Router>
       <Navbar onLogout={handleLogout} authenticatedUser={authenticatedUser} />
@@ -131,7 +139,18 @@ const App = () => {
         />
         <Route
           path="/team"
-          element={authenticatedUser ? <Team data={profilesData} currentTeam={currentTeam} setCurrentTeam={setCurrentTeam} /> : <Navigate to="/signin" />}
+          element={
+          authenticatedUser ? (
+            <Team
+              data={profilesData}
+              currentTeam={currentTeam}
+              setCurrentTeam={setCurrentTeam}
+              authenticatedUser={authenticatedUser}
+          />
+          ) : (
+          <Navigate to="/signin" />
+          )
+          }
         />
         <Route path="/agency" element={<Agency data={profilesData} />} />
         <Route

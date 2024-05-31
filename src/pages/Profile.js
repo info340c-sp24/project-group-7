@@ -56,6 +56,8 @@ const Profile = ({ user, authenticatedUser }) => {
     } catch (error) {
       console.error("Error saving profile: ", error);
     }
+
+    console.log("Profile saved successfully! -- runs after everything runs");
   };
   //
 
