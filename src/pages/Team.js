@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { getFirestore, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import Chat from '../components/Chat';
 import './team.css';
 
 const Team = ({ data, currentTeam, setCurrentTeam, authenticatedUser }) => {
@@ -115,6 +116,13 @@ const Team = ({ data, currentTeam, setCurrentTeam, authenticatedUser }) => {
           </div>
         )}
       </div>
+
+      {currentTeam && (
+        <div className="chat-section">
+          <h3>Team Chat</h3>
+          <Chat />
+        </div>
+      )}
     </div>
   );
 };
