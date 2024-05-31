@@ -122,6 +122,7 @@ const App = () => {
     }
   };
   console.log("CURRENTTEAM",currentTeam);
+  console.log("AppJS CurrentUser: ", updateUser);
   return (
     <Router>
       <Navbar onLogout={handleLogout} authenticatedUser={authenticatedUser} />
