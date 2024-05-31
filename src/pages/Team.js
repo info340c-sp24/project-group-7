@@ -1,17 +1,42 @@
 import React, { useState } from 'react';
+import { getFirestore, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import './team.css';
 
-const Team = ({ data, currentTeam, setCurrentTeam }) => {
+const Team = ({ data, currentTeam, setCurrentTeam, authenticatedUser }) => {
   const [teamName, setTeamName] = useState(currentTeam);
   const [isEditing, setIsEditing] = useState(false);
+
+  
+  const updateUserTeam = async (userId, newTeamName) => {
+    try {
+      const db = getFirestore();
+      const userRef = doc(db, "Ball", userId);
+      const docSnapshot = await getDoc(userRef);
+
+      if (docSnapshot.exists()) {
+        // Document exists, update the team field
+        await updateDoc(userRef, { team: newTeamName });
+        console.log("Team updated successfully!");
+      } else {
+        // Document does not exist, create it with the team field
+        await setDoc(userRef, { team: newTeamName });
+        console.log("Team created successfully!");
+      }
+    } catch (error) {
+      console.error("Error updating/creating team: ", error);
+    }
+  };
 
   const handleEdit = () => {
     setIsEditing(true);
   };
 
-  const handleSave = () => {
-    setIsEditing(false);
-    setCurrentTeam(teamName);
+  const handleSave = async () => {
+    if (authenticatedUser) {
+      await updateUserTeam(authenticatedUser.uid, teamName);
+      setIsEditing(false);
+      setCurrentTeam(teamName);
+    }
   };
 
   const handleChange = (event) => {
@@ -24,6 +49,9 @@ const Team = ({ data, currentTeam, setCurrentTeam }) => {
       setCurrentTeam(null);
     }
   };
+  console.log("cURRENT TEAM DISPLAYED IN TEAM.js", currentTeam);
+  // Filter data to get users in the current user's team
+  const teamMembers = data.filter(profileObj => profileObj.team === currentTeam);
 
   return (
     <div className='team'>
@@ -64,28 +92,26 @@ const Team = ({ data, currentTeam, setCurrentTeam }) => {
               </tr>
             </thead>
             <tbody>
-              {data
-                .filter((profileObj) => profileObj.team === currentTeam)
-                .map((profileObj) => (
-                  <tr key={profileObj.username}>
-                    <td>{`${profileObj.firstName} ${profileObj.lastName}`}</td>
-                    <td>{profileObj.email}</td>
-                    <td>{profileObj.position}</td>
-                    <td>{(profileObj.points / profileObj.games).toFixed(1)}</td>
-                    <td>{(profileObj.assists / profileObj.games).toFixed(1)}</td>
-                    <td>{(profileObj.rebounds / profileObj.games).toFixed(1)}</td>
-                    <td>{(profileObj.steals / profileObj.games).toFixed(1)}</td>
-                    <td>{(profileObj.blocks / profileObj.games).toFixed(1)}</td>
-                    <td>{profileObj.games}</td>
-                  </tr>
-                ))}
+              {teamMembers.map((profileObj) => (
+                <tr key={profileObj.username}>
+                  <td>{`${profileObj.firstName} ${profileObj.lastName}`}</td>
+                  <td>{profileObj.email}</td>
+                  <td>{profileObj.position}</td>
+                  <td>{(profileObj.points / profileObj.games).toFixed(1)}</td>
+                  <td>{(profileObj.assists / profileObj.games).toFixed(1)}</td>
+                  <td>{(profileObj.rebounds / profileObj.games).toFixed(1)}</td>
+                  <td>{(profileObj.steals / profileObj.games).toFixed(1)}</td>
+                  <td>{(profileObj.blocks / profileObj.games).toFixed(1)}</td>
+                  <td>{profileObj.games}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
 
         {currentTeam && (
           <div className="leaveTeamButtonContainer">
-            <button className="leaveTeamBtn" onClick={handleLeaveTeam}>Leave Team</button> {/* Leave Team button */}
+            <button className="leaveTeamBtn" onClick={handleLeaveTeam}>Leave Team</button>
           </div>
         )}
       </div>

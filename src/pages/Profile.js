@@ -9,7 +9,9 @@ const Profile = ({ user, authenticatedUser }) => {
   const [formData, setFormData] = useState(user ? { ...user } : {});
   const defaultImage = 'img/pfp.jpg';
 
+  //firebase
   useEffect(() => {
+    console.log("hello");
     if (authenticatedUser) {
       const fetchProfile = async () => {
         const db = getFirestore();
@@ -17,7 +19,11 @@ const Profile = ({ user, authenticatedUser }) => {
         const docSnap = await getDoc(userRef);
 
         if (docSnap.exists() && !isEditClicked){
+          
           const data = docSnap.data();
+
+          console.log("logged fetch data: ", data);
+
           setFormData(data);
         } else {
           setIsEditing(true);
@@ -26,7 +32,7 @@ const Profile = ({ user, authenticatedUser }) => {
 
       fetchProfile();
     }
-  }, [authenticatedUser, isEditClicked]);
+  }, []);
 
   if (!user) {
     return <Navigate to="/signin" />;
@@ -50,7 +56,10 @@ const Profile = ({ user, authenticatedUser }) => {
     } catch (error) {
       console.error("Error saving profile: ", error);
     }
+
+    console.log("Profile saved successfully! -- runs after everything runs");
   };
+  //
 
   const handleSave = async () => {
     await saveProfile();
@@ -62,7 +71,7 @@ const Profile = ({ user, authenticatedUser }) => {
     setFormData(user);
     setIsEditing(false);
   };
-
+  console.log("form data: ", formData);
   return (
     <div className='profile'>
       {isEditing ? (
@@ -87,7 +96,7 @@ const Profile = ({ user, authenticatedUser }) => {
             <input
               type="text"
               name="experience"
-              value={formData.experience || ''}
+              value={formData.experience}
               onChange={handleInputChange}
             />
           </section>
@@ -124,7 +133,7 @@ const Profile = ({ user, authenticatedUser }) => {
                 <input
                   type="number"
                   name="games"
-                  value={formData.games || ''}
+                  value={formData.games}
                   onChange={handleInputChange}
                 />
               </li>
@@ -199,42 +208,42 @@ const Profile = ({ user, authenticatedUser }) => {
         <div>
           <section className="profile-pic">
             <img
-              src={user.img || defaultImage}
-              alt={`${user.firstName}`}
+              src={formData.img || defaultImage}
+              alt={`${formData.firstName}`}
               style={{ width: '200px', height: '200px' }}
             />
           </section>
 
           <section className="bio">
             <h2>Basketball Experience</h2>
-            <p>{user.experience || 'Not Provided'}</p>
+            <p>{formData.experience || 'Not Provided'}</p>
           </section>
 
           <section className="bio-data">
             <h2>Height</h2>
-            <p>{user.height || 'Not Provided'}</p>
+            <p>{formData.height || 'Not Provided'}</p>
             <h2>Weight</h2>
-            <p>{user.weight || 'Not Provided'}</p>
+            <p>{formData.weight || 'Not Provided'}</p>
             <h2>Wingspan</h2>
-            <p>{user.wingspan || 'Not Provided'}</p>
+            <p>{formData.wingspan || 'Not Provided'}</p>
           </section>
 
           <section className="stats">
             <h2>Statistics</h2>
             <ul>
-              <li>Games played: {user.games || 0}</li>
-              <li>Points per game: {user.points || 0}</li>
-              <li>Assists per game: {user.assists || 0}</li>
-              <li>Rebounds per game: {user.rebounds || 0}</li>
-              <li>Steals per game: {user.steals || 0}</li>
-              <li>Blocks per game: {user.blocks || 0}</li>
+              <li>Games played: {formData.games || 0}</li>
+              <li>Points per game: {formData.points || 0}</li>
+              <li>Assists per game: {formData.assists || 0}</li>
+              <li>Rebounds per game: {formData.rebounds || 0}</li>
+              <li>Steals per game: {formData.steals || 0}</li>
+              <li>Blocks per game: {formData.blocks || 0}</li>
             </ul>
           </section>
 
           <section className="contact-info">
             <h2>Contact Information</h2>
-            <p>Email: {user.email || 'Not Provided'}</p>
-            <p>Phone: {user.phone || 'Not Provided'}</p>
+            <p>Email: {formData.email || 'Not Provided'}</p>
+            <p>Phone: {formData.phone || 'Not Provided'}</p>
           </section>
 
           <button type="button" onClick={() => { setIsEditing(true); setIsEditClicked(true); }}>
