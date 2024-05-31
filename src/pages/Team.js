@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './team.css';
+import Chat from '../components/Chat'; // Corrected path to Chat component
 
 const Team = ({ data, currentTeam, setCurrentTeam }) => {
   const [teamName, setTeamName] = useState(currentTeam);
@@ -89,6 +90,13 @@ const Team = ({ data, currentTeam, setCurrentTeam }) => {
           </div>
         )}
       </div>
+
+      {currentTeam && (
+        <div className="chat-section">
+          <h3>Team Chat</h3>
+          <Chat />
+        </div>
+      )}
     </div>
   );
 };
