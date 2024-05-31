@@ -40,6 +40,35 @@ const App = () => {
   useEffect(() => {
     if (authenticatedUser) {
       sessionStorage.setItem('authenticatedUser', JSON.stringify(authenticatedUser));
+  
+      const fetchAndSetCurrentTeam = async () => {
+        const userTeam = await fetchUserTeam(authenticatedUser.uid);
+        setCurrentTeam(userTeam);
+      };
+  
+      fetchAndSetCurrentTeam();
+    } else {
+      sessionStorage.removeItem('authenticatedUser');
+      setCurrentTeam(null);
+    }
+  }, [authenticatedUser]);
+
+  const fetchUserTeam = async (userId) => {
+    try {
+      const db = getFirestore();
+      const userRef = doc(db, "Ball", userId);
+      const userDoc = await getDoc(userRef);
+      const userData = userDoc.data();
+      return userData?.team || null;
+    } catch (error) {
+      console.error("Error fetching user team: ", error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    if (authenticatedUser) {
+      sessionStorage.setItem('authenticatedUser', JSON.stringify(authenticatedUser));
       //setCurrentTeam(authenticatedUser.team);
 
       console.log("current team being passed as prop: ", authenticatedUser.team);
@@ -61,11 +90,11 @@ const App = () => {
       try {
         const userCredential = await signInWithEmailAndPassword(auth, identifier, password);
         const user = userCredential.user;
-        const userRef = doc(db, "Ball", user.uid);
-        const userDoc = await getDoc(userRef);
-        const userData = userDoc.data();
+        //const userRef = doc(db, "Ball", user.uid);
+        //const userDoc = await getDoc(userRef);
+        //const userData = userDoc.data();
         setAuthenticatedUser(user);
-        setCurrentTeam(userData?.team || null); // Set currentTeam based on the user's data
+        //setCurrentTeam(userData?.team || null); // Set currentTeam based on the user's data
         setLoginError(null); // Clear any previous error
       } catch (error) {
         console.error(error);
@@ -86,7 +115,7 @@ const App = () => {
           const userCredential = await signInWithEmailAndPassword(auth, email, password);
           const user = userCredential.user;
           setAuthenticatedUser(user);
-          setCurrentTeam(userData?.team || null); // Set currentTeam based on the user's data
+          //setCurrentTeam(userData?.team || null); // Set currentTeam based on the user's data
           setLoginError(null); // Clear any previous error
         } else {
           setLoginError("Username not found");
