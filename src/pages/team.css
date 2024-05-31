@@ -51,9 +51,14 @@
 }
 
 .filter-container {
-    display: flex;
-    align-items: center;
-}
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+  }
+  
+  .filter-container label {
+    margin-right: 10px;
+  }
+  
 
 #position-filter {
     margin-left: 10px;
