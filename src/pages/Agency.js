@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import _ from 'lodash';
 import './team.css';
 import { getFirestore, doc, updateDoc } from 'firebase/firestore';
+import Chat from '../components/Chat';
 
 export default function Agency({ data, authenticatedUser }) {
   console.log('Agency data being passed on: ', data);
@@ -213,6 +214,9 @@ export default function Agency({ data, authenticatedUser }) {
           </tbody>
         </table>
       </div>
+      <div className="chat-section">
+          <Chat />
+        </div>
     </div>
   );
 }
