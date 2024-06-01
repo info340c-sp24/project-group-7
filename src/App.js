@@ -182,7 +182,15 @@ const App = () => {
           )
           }
         />
-        <Route path="/agency" element={<Agency data={profilesData} />} />
+        <Route 
+          path="/agency" 
+          element={
+            <Agency 
+              data={profilesData} 
+              authenticatedUser={authenticatedUser}
+            />
+          } 
+        />
         <Route
           path="/signin"
           element={<Signin onLogin={handleLogin} onGoogleLogin={handleGoogleLogin} authenticatedUser={authenticatedUser} />}

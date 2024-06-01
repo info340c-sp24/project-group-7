@@ -125,6 +125,31 @@ const Profile = ({ user, authenticatedUser }) => {
             />
           </section>
 
+          <section className="location">
+            <h2>Location</h2>
+            <input
+              type="text"
+              name="state"
+              value={formData.state || ''}
+              onChange={handleInputChange}
+              placeholder="State"
+            />
+            <input
+              type="text"
+              name="county"
+              value={formData.county || ''}
+              onChange={handleInputChange}
+              placeholder="County"
+            />
+            <input
+              type="text"
+              name="city"
+              value={formData.city || ''}
+              onChange={handleInputChange}
+              placeholder="City"
+            />
+          </section>
+
           <section className="stats">
             <h2>Statistics</h2>
             <ul>
@@ -226,6 +251,13 @@ const Profile = ({ user, authenticatedUser }) => {
             <p>{formData.weight || 'Not Provided'}</p>
             <h2>Wingspan</h2>
             <p>{formData.wingspan || 'Not Provided'}</p>
+          </section>
+
+          <section className="location">
+            <h2>Location</h2>
+            <p>State: {formData.state || 'Not Provided'}</p>
+            <p>County: {formData.county || 'Not Provided'}</p>
+            <p>City: {formData.city || 'Not Provided'}</p>
           </section>
 
           <section className="stats">
