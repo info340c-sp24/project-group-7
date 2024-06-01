@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
+import Chat from '../components/Chat';
 import './team.css'
 
 export default function Agency({ data }) {
@@ -175,6 +176,12 @@ export default function Agency({ data }) {
         </tbody>
       </table>
     </div>
+    {(
+        <div className="chat-section">
+          <h3>Team Chat</h3>
+          <Chat />
+        </div>
+      )}
     </div>
   );
   
