@@ -49,14 +49,19 @@ export default function Agency({ data, authenticatedUser }) {
     if (filterByLocation && authenticatedUser && authenticatedUser.state && authenticatedUser.county) {
       return (
         user.team === null &&
-        (user.position === selectedPosition || selectedPosition === '') &&
+        (Array.isArray(user.position) ? user.position.includes(selectedPosition) : user.position === selectedPosition || selectedPosition === '') &&
         user.state === authenticatedUser.state &&
         user.county === authenticatedUser.county
       );
     } else {
-      return user.team === null && (user.position === selectedPosition || selectedPosition === '');
+      if (selectedPosition === '') {
+        return user.team === null;
+      } else {
+        return user.team === null && (Array.isArray(user.position) ? user.position.includes(selectedPosition) : user.position === selectedPosition);
+      }
     }
   });
+  
 
   const handleAddToTeam = async (user) => {
     if (!authenticatedUser || !authenticatedUser.team) {
@@ -191,7 +196,7 @@ export default function Agency({ data, authenticatedUser }) {
               <tr key={profileObj.username}>
                 <td>{`${profileObj.firstName} ${profileObj.lastName}`}</td>
                 <td className="text-center">{profileObj.email}</td>
-                <td className="text-center">{profileObj.position}</td>
+                <td className="text-center">{Array.isArray(profileObj.position) ? profileObj.position.join(', ') : profileObj.position}</td>
                 <td className="text-center">{profileObj.height}</td>
                 <td className="text-center">{profileObj.weight}</td>
                 <td className="text-center">{profileObj.wingspan}</td>

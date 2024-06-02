@@ -8,6 +8,7 @@ const Profile = ({ user, authenticatedUser }) => {
   const [isEditClicked, setIsEditClicked] = useState(false);
   const [formData, setFormData] = useState(user ? { ...user } : {});
   const defaultImage = 'img/pfp.jpg';
+  const positions = ['PG', 'SG', 'SF', 'PF', 'C'];
 
   //firebase
   useEffect(() => {
@@ -39,11 +40,21 @@ const Profile = ({ user, authenticatedUser }) => {
   }
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: e.target.type === 'number' ? Number(value) : value,
-    });
+    const { name, value, checked } = e.target;
+    if (name === 'position') {
+      const updatedPositions = checked
+        ? [...formData.position, value]
+        : formData.position.filter((pos) => pos !== value);
+      setFormData({
+        ...formData,
+        [name]: updatedPositions,
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: e.target.type === 'number' ? Number(value) : value,
+      });
+    }
   };
 
   const saveProfile = async () => {
@@ -59,7 +70,6 @@ const Profile = ({ user, authenticatedUser }) => {
 
     console.log("Profile saved successfully! -- runs after everything runs");
   };
-  //
 
   const handleSave = async () => {
     await saveProfile();
@@ -88,6 +98,47 @@ const Profile = ({ user, authenticatedUser }) => {
               value={formData.img}
               onChange={handleInputChange}
               placeholder="Image URL"
+            />
+          </section>
+
+          <section className="position">
+            <h2>Primary Position</h2>
+            {positions.map((pos) => (
+              <label key={pos}>
+                <input
+                  type="checkbox"
+                  name="position"
+                  value={pos}
+                  checked={formData.position.includes(pos)}
+                  onChange={handleInputChange}
+                />
+                {pos}
+              </label>
+            ))}
+          </section>
+
+          <section className="location">
+            <h2>Location</h2>
+            <input
+              type="text"
+              name="state"
+              value={formData.state || ''}
+              onChange={handleInputChange}
+              placeholder="State"
+            />
+            <input
+              type="text"
+              name="county"
+              value={formData.county || ''}
+              onChange={handleInputChange}
+              placeholder="County"
+            />
+            <input
+              type="text"
+              name="city"
+              value={formData.city || ''}
+              onChange={handleInputChange}
+              placeholder="City"
             />
           </section>
 
@@ -122,31 +173,6 @@ const Profile = ({ user, authenticatedUser }) => {
               name="wingspan"
               value={formData.wingspan || ''}
               onChange={handleInputChange}
-            />
-          </section>
-
-          <section className="location">
-            <h2>Location</h2>
-            <input
-              type="text"
-              name="state"
-              value={formData.state || ''}
-              onChange={handleInputChange}
-              placeholder="State"
-            />
-            <input
-              type="text"
-              name="county"
-              value={formData.county || ''}
-              onChange={handleInputChange}
-              placeholder="County"
-            />
-            <input
-              type="text"
-              name="city"
-              value={formData.city || ''}
-              onChange={handleInputChange}
-              placeholder="City"
             />
           </section>
 
@@ -239,6 +265,18 @@ const Profile = ({ user, authenticatedUser }) => {
             />
           </section>
 
+          <section className="position">
+            <h2>Primary Position</h2>
+            <p>{Array.isArray(formData.position) ? formData.position.join(', ') : formData.position || 'Not Provided'}</p>
+          </section>
+
+          <section className="location">
+            <h2>Location</h2>
+            <p>State: {formData.state || 'Not Provided'}</p>
+            <p>County: {formData.county || 'Not Provided'}</p>
+            <p>City: {formData.city || 'Not Provided'}</p>
+          </section>
+
           <section className="bio">
             <h2>Basketball Experience</h2>
             <p>{formData.experience || 'Not Provided'}</p>
@@ -251,13 +289,6 @@ const Profile = ({ user, authenticatedUser }) => {
             <p>{formData.weight || 'Not Provided'}</p>
             <h2>Wingspan</h2>
             <p>{formData.wingspan || 'Not Provided'}</p>
-          </section>
-
-          <section className="location">
-            <h2>Location</h2>
-            <p>State: {formData.state || 'Not Provided'}</p>
-            <p>County: {formData.county || 'Not Provided'}</p>
-            <p>City: {formData.city || 'Not Provided'}</p>
           </section>
 
           <section className="stats">

@@ -27,7 +27,7 @@ const Signin = ({ onLogin, onGoogleLogin, authenticatedUser }) => {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-    const { newUsername, newEmail, newPassword } = e.target.elements;
+    const { newUsername, newFirstName, newLastName, newEmail, newPassword } = e.target.elements;
     const auth = getAuth();
     const db = getFirestore();
     try {
@@ -35,10 +35,12 @@ const Signin = ({ onLogin, onGoogleLogin, authenticatedUser }) => {
       const userCredential = await createUserWithEmailAndPassword(auth, newEmail.value, newPassword.value);
       const user = userCredential.user;
 
-      // Add the username to Firestore
+      // Add the user data to Firestore
       await addDoc(collection(db, "Ball"), {
         uid: user.uid,
         username: newUsername.value,
+        firstName: newFirstName.value,
+        lastName: newLastName.value,
         email: newEmail.value,
         team: null // Assuming new users don't have a team initially
       });
@@ -76,6 +78,14 @@ const Signin = ({ onLogin, onGoogleLogin, authenticatedUser }) => {
               <div className="form-group">
                 <label htmlFor="newUsername">Username</label>
                 <input type="text" id="newUsername" name="newUsername" required className="input-field" />
+              </div>
+              <div className="form-group">
+                <label htmlFor="newFirstName">First Name</label>
+                <input type="text" id="newFirstName" name="newFirstName" required className="input-field" />
+              </div>
+              <div className="form-group">
+                <label htmlFor="newLastName">Last Name</label>
+                <input type="text" id="newLastName" name="newLastName" required className="input-field" />
               </div>
               <div className="form-group">
                 <label htmlFor="newEmail">Email</label>
