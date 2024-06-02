@@ -112,7 +112,7 @@ const Profile = ({ user, authenticatedUser }) => {
                   type="checkbox"
                   name="position"
                   value={pos}
-                  checked={formData.position.includes(pos)}
+                  checked={formData.position && formData.position.includes(pos)}
                   onChange={handleInputChange}
                 />
                 {pos}
