@@ -10,30 +10,37 @@ const Profile = ({ user, authenticatedUser }) => {
   const defaultImage = 'img/pfp.jpg';
   const positions = ['PG', 'SG', 'SF', 'PF', 'C'];
 
-  //firebase
   useEffect(() => {
-    console.log("hello");
     if (authenticatedUser) {
       const fetchProfile = async () => {
         const db = getFirestore();
         const userRef = doc(db, "Ball", authenticatedUser.uid);
         const docSnap = await getDoc(userRef);
 
-        if (docSnap.exists() && !isEditClicked){
-          
+        if (docSnap.exists() && !isEditClicked) {
           const data = docSnap.data();
-
-          console.log("logged fetch data: ", data);
-
-          setFormData(data);
-        } else {
-          setIsEditing(true);
+          setFormData({
+            ...data,
+            team: data.team || null,
+            position: data.position || [],
+            height: data.height || '',
+            weight: data.weight || '',
+            wingspan: data.wingspan || '',
+            games: data.games || 0,
+            points: data.points || 0,
+            assists: data.assists || 0,
+            rebounds: data.rebounds || 0,
+            steals: data.steals || 0,
+            blocks: data.blocks || 0,
+            phone: data.phone || '',
+            img: data.img || defaultImage,
+          });
         }
       };
 
       fetchProfile();
     }
-  }, []);
+  }, [authenticatedUser, isEditClicked]);
 
   if (!user) {
     return <Navigate to="/signin" />;
@@ -43,8 +50,8 @@ const Profile = ({ user, authenticatedUser }) => {
     const { name, value, checked } = e.target;
     if (name === 'position') {
       const updatedPositions = checked
-        ? [...formData.position, value]
-        : formData.position.filter((pos) => pos !== value);
+        ? [...(formData.position || []), value]
+        : (formData.position || []).filter((pos) => pos !== value);
       setFormData({
         ...formData,
         [name]: updatedPositions,
@@ -60,31 +67,43 @@ const Profile = ({ user, authenticatedUser }) => {
   const saveProfile = async () => {
     const db = getFirestore();
     const userRef = doc(db, "Ball", authenticatedUser.uid);
-    const userData = { ...formData }; 
+    const userData = {
+      ...formData,
+      team: formData.team || null,
+      position: formData.position || [],
+      height: formData.height || '',
+      weight: formData.weight || '',
+      wingspan: formData.wingspan || '',
+      games: formData.games || 0,
+      points: formData.points || 0,
+      assists: formData.assists || 0,
+      rebounds: formData.rebounds || 0,
+      steals: formData.steals || 0,
+      blocks: formData.blocks || 0,
+      phone: formData.phone || '',
+      img: formData.img || defaultImage,
+    };
 
-    userData.position = formData.position ? [...formData.position] : [];
-    
     try {
       await setDoc(userRef, userData);
       console.log("Profile saved successfully!");
     } catch (error) {
       console.error("Error saving profile: ", error);
     }
-  
-    console.log("Profile saved successfully! -- runs after everything runs");
   };
 
   const handleSave = async () => {
     await saveProfile();
     setIsEditing(false);
-    setFormData(formData);
+    setIsEditClicked(false);
   };
 
   const handleCancel = () => {
-    setFormData(user);
     setIsEditing(false);
+    setFormData(user);
+    setIsEditClicked(false);
   };
-  console.log("form data: ", formData);
+
   return (
     <div className='profile'>
       {isEditing ? (
@@ -112,7 +131,7 @@ const Profile = ({ user, authenticatedUser }) => {
                   type="checkbox"
                   name="position"
                   value={pos}
-                  checked={formData.position && formData.position.includes(pos)}
+                  checked={Array.isArray(formData.position) ? formData.position.includes(pos) : false}
                   onChange={handleInputChange}
                 />
                 {pos}
@@ -270,7 +289,7 @@ const Profile = ({ user, authenticatedUser }) => {
 
           <section className="position">
             <h2>Position</h2>
-            <p>{Array.isArray(formData.position) && formData.position.length > 0 ? formData.position.join(', ') : 'Not Provided'}</p>
+            <p>{Array.isArray(formData.position) ? formData.position.join(', ') : formData.position || 'Not Provided'}</p>
           </section>
 
           <section className="location">
@@ -298,22 +317,28 @@ const Profile = ({ user, authenticatedUser }) => {
             <h2>Statistics</h2>
             <ul>
               <li>Games played: {formData.games || 0}</li>
-              <li>Points per game: {formData.points || 0}</li>
-              <li>Assists per game: {formData.assists || 0}</li>
-              <li>Rebounds per game: {formData.rebounds || 0}</li>
-              <li>Steals per game: {formData.steals || 0}</li>
-              <li>Blocks per game: {formData.blocks || 0}</li>
+              <li>Total Points: {formData.points || 0}</li>
+              <li>Total Assists: {formData.assists || 0}</li>
+              <li>Total Rebounds: {formData.rebounds || 0}</li>
+              <li>Total Steals: {formData.steals || 0}</li>
+              <li>Total Blocks: {formData.blocks || 0}</li>
             </ul>
           </section>
 
           <section className="contact-info">
             <h2>Contact Information</h2>
-            <p>Email: {formData.email || 'Not Provided'}</p>
+            <p>Email: {formData.email}</p>
             <p>Phone: {formData.phone || 'Not Provided'}</p>
           </section>
 
-          <button type="button" onClick={() => { setIsEditing(true); setIsEditClicked(true); }}>
-            Edit Profile
+          <button
+            className="edit"
+            onClick={() => {
+              setIsEditing(true);
+              setIsEditClicked(true);
+            }}
+          >
+            Edit
           </button>
         </div>
       )}

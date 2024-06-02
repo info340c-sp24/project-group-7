@@ -14,11 +14,9 @@ const Team = ({ data, currentTeam, setCurrentTeam, authenticatedUser }) => {
       const docSnapshot = await getDoc(userRef);
 
       if (docSnapshot.exists()) {
-        // Document exists, update the team field
         await updateDoc(userRef, { team: newTeamName });
         console.log("Team updated successfully!");
       } else {
-        // Document does not exist, create it with the team field
         await setDoc(userRef, { team: newTeamName });
         console.log("Team created successfully!");
       }
@@ -49,8 +47,7 @@ const Team = ({ data, currentTeam, setCurrentTeam, authenticatedUser }) => {
       setCurrentTeam(null);
     }
   };
-  console.log("cURRENT TEAM DISPLAYED IN TEAM.js", currentTeam);
-  // Filter data to get users in the current user's team
+  console.log("CURRENT TEAM DISPLAYED IN TEAM.js", currentTeam);
   const teamMembers = data.filter(profileObj => profileObj.team === currentTeam);
 
   return (

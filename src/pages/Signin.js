@@ -27,7 +27,7 @@ const Signin = ({ onLogin, onGoogleLogin, authenticatedUser }) => {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-    const { newUsername, newFirstName, newLastName, newEmail, newPassword } = e.target.elements;
+    const { newUsername, newEmail, newPassword } = e.target.elements;
     const auth = getAuth();
     const db = getFirestore();
     try {
@@ -35,14 +35,27 @@ const Signin = ({ onLogin, onGoogleLogin, authenticatedUser }) => {
       const userCredential = await createUserWithEmailAndPassword(auth, newEmail.value, newPassword.value);
       const user = userCredential.user;
 
-      // Add the user data to Firestore
-      await addDoc(collection(db, "Ball"), {
+      // Add user profile data to Firestore
+      await addDoc(collection(db, "Ball/"), {
         uid: user.uid,
         username: newUsername.value,
-        firstName: newFirstName.value,
-        lastName: newLastName.value,
         email: newEmail.value,
-        team: null // Assuming new users don't have a team initially
+        experience: '',
+        height: 0,
+        weight: 0,
+        wingspan: 0,
+        state: '',
+        county: '',
+        city: '',
+        position: [],
+        games: 0,
+        points: 0,
+        assists: 0,
+        rebounds: 0,
+        steals: 0,
+        blocks: 0,
+        phone: '',
+        team: null,
       });
 
       // Log in the user after sign-up
