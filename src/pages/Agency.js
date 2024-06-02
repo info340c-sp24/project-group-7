@@ -192,29 +192,29 @@ export default function Agency({ data, authenticatedUser }) {
             </tr>
           </thead>
           <tbody>
-            {filteredData.map((profileObj) => (
-              <tr key={profileObj.username}>
-                <td>{`${profileObj.firstName} ${profileObj.lastName}`}</td>
-                <td className="text-center">{profileObj.email}</td>
-                <td className="text-center">{Array.isArray(profileObj.position) ? profileObj.position.join(', ') : profileObj.position}</td>
-                <td className="text-center">{profileObj.height}</td>
-                <td className="text-center">{profileObj.weight}</td>
-                <td className="text-center">{profileObj.wingspan}</td>
-                <td className="text-center">{(profileObj.points / profileObj.games).toFixed(1)}</td>
-                <td className="text-center">{(profileObj.assists / profileObj.games).toFixed(1)}</td>
-                <td className="text-center">{(profileObj.rebounds / profileObj.games).toFixed(1)}</td>
-                <td className="text-center">{(profileObj.steals / profileObj.games).toFixed(1)}</td>
-                <td className="text-center">{(profileObj.blocks / profileObj.games).toFixed(1)}</td>
-                <td className="text-center">{profileObj.games}</td>
-                {authenticatedUser && authenticatedUser.team && (
-                  <td className="text-center">
-                    <button onClick={() => handleAddToTeam(profileObj)}>
-                      <span className="material-icons">add</span>
-                    </button>
-                  </td>
-                )}
-              </tr>
-            ))}
+          {filteredData.map((profileObj) => (
+            <tr key={profileObj.username}>
+              <td>{`${profileObj.firstName} ${profileObj.lastName}`}</td>
+              <td className="text-center">{profileObj.email}</td>
+              <td className="text-center">{Array.isArray(profileObj.position) ? profileObj.position.join(', ') : profileObj.position || 'N/A'}</td>
+              <td className="text-center">{profileObj.height || 'N/A'}</td>
+              <td className="text-center">{profileObj.weight || 'N/A'}</td>
+              <td className="text-center">{profileObj.wingspan || 'N/A'}</td>
+              <td className="text-center">{profileObj.games ? (profileObj.points && profileObj.games ? (profileObj.points / profileObj.games).toFixed(1) : 'N/A') : 'N/A'}</td>
+              <td className="text-center">{profileObj.games ? (profileObj.assists && profileObj.games ? (profileObj.assists / profileObj.games).toFixed(1) : 'N/A') : 'N/A'}</td>
+              <td className="text-center">{profileObj.games ? (profileObj.rebounds && profileObj.games ? (profileObj.rebounds / profileObj.games).toFixed(1) : 'N/A') : 'N/A'}</td>
+              <td className="text-center">{profileObj.games ? (profileObj.steals && profileObj.games ? (profileObj.steals / profileObj.games).toFixed(1) : 'N/A') : 'N/A'}</td>
+              <td className="text-center">{profileObj.games ? (profileObj.blocks && profileObj.games ? (profileObj.blocks / profileObj.games).toFixed(1) : 'N/A') : 'N/A'}</td>
+              <td className="text-center">{profileObj.games || 'N/A'}</td>
+              {authenticatedUser && authenticatedUser.team && (
+                <td className="text-center">
+                  <button onClick={() => handleAddToTeam(profileObj)}>
+                    <span className="material-icons">add</span>
+                  </button>
+                </td>
+              )}
+            </tr>
+          ))}
           </tbody>
         </table>
       </div>

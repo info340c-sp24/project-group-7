@@ -60,14 +60,17 @@ const Profile = ({ user, authenticatedUser }) => {
   const saveProfile = async () => {
     const db = getFirestore();
     const userRef = doc(db, "Ball", authenticatedUser.uid);
-  
+    const userData = { ...formData }; 
+
+    userData.position = formData.position ? [...formData.position] : [];
+    
     try {
-      await setDoc(userRef, formData);
+      await setDoc(userRef, userData);
       console.log("Profile saved successfully!");
     } catch (error) {
       console.error("Error saving profile: ", error);
     }
-
+  
     console.log("Profile saved successfully! -- runs after everything runs");
   };
 
@@ -102,7 +105,7 @@ const Profile = ({ user, authenticatedUser }) => {
           </section>
 
           <section className="position">
-            <h2>Primary Position</h2>
+            <h2>Position</h2>
             {positions.map((pos) => (
               <label key={pos}>
                 <input
@@ -266,8 +269,8 @@ const Profile = ({ user, authenticatedUser }) => {
           </section>
 
           <section className="position">
-            <h2>Primary Position</h2>
-            <p>{Array.isArray(formData.position) ? formData.position.join(', ') : formData.position || 'Not Provided'}</p>
+            <h2>Position</h2>
+            <p>{Array.isArray(formData.position) && formData.position.length > 0 ? formData.position.join(', ') : 'Not Provided'}</p>
           </section>
 
           <section className="location">
