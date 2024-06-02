@@ -16,6 +16,30 @@
     text-align: center;
 }
 
+.invitations {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .invitations h3 {
+    margin-top: 0;
+  }
+  
+  .invitations ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .invitations li {
+    margin-bottom: 10px;
+  }
+  
+  .invitations button {
+    margin-right: 10px;
+  }  
+
 .team .table{
     width: 50%;
     margin-left: auto;

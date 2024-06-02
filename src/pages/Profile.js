@@ -3,10 +3,11 @@ import { Navigate } from 'react-router-dom';
 import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
 import './profile.css';
 
-const Profile = ({ user, authenticatedUser }) => {
+const Profile = ({ authenticatedUser }) => {
+  console.log(authenticatedUser);
   const [isEditing, setIsEditing] = useState(false);
   const [isEditClicked, setIsEditClicked] = useState(false);
-  const [formData, setFormData] = useState(user ? { ...user } : {});
+  const [formData, setFormData] = useState(authenticatedUser ? { ...authenticatedUser } : {});
   const defaultImage = 'img/pfp.jpg';
   const positions = ['PG', 'SG', 'SF', 'PF', 'C'];
 
@@ -19,6 +20,7 @@ const Profile = ({ user, authenticatedUser }) => {
 
         if (docSnap.exists() && !isEditClicked) {
           const data = docSnap.data();
+          console.log(data);
           setFormData({
             ...data,
             team: data.team || null,
@@ -42,7 +44,7 @@ const Profile = ({ user, authenticatedUser }) => {
     }
   }, [authenticatedUser, isEditClicked]);
 
-  if (!user) {
+  if (!authenticatedUser) {
     return <Navigate to="/signin" />;
   }
 
@@ -69,23 +71,23 @@ const Profile = ({ user, authenticatedUser }) => {
     const userRef = doc(db, "Ball", authenticatedUser.uid);
     const userData = {
       ...formData,
-      team: formData.team || null,
-      position: formData.position || [],
-      height: formData.height || '',
-      weight: formData.weight || '',
-      wingspan: formData.wingspan || '',
-      games: formData.games || 0,
-      points: formData.points || 0,
-      assists: formData.assists || 0,
-      rebounds: formData.rebounds || 0,
-      steals: formData.steals || 0,
-      blocks: formData.blocks || 0,
-      phone: formData.phone || '',
+      team: formData.team,
+      position: formData.position,
+      height: formData.height,
+      weight: formData.weight,
+      wingspan: formData.wingspan,
+      games: formData.games,
+      points: formData.points,
+      assists: formData.assists,
+      rebounds: formData.rebounds,
+      steals: formData.steals,
+      blocks: formData.blocks,
+      phone: formData.phone,
       img: formData.img || defaultImage,
     };
-
+  
     try {
-      await setDoc(userRef, userData);
+      await setDoc(userRef, userData); // Use setDoc to update the document
       console.log("Profile saved successfully!");
     } catch (error) {
       console.error("Error saving profile: ", error);
@@ -100,7 +102,7 @@ const Profile = ({ user, authenticatedUser }) => {
 
   const handleCancel = () => {
     setIsEditing(false);
-    setFormData(user);
+    setFormData(authenticatedUser);
     setIsEditClicked(false);
   };
 
