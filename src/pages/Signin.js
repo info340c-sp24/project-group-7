@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
-import { getFirestore, doc, setDoc } from 'firebase/firestore';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { getFirestore, collection, doc, addDoc, setDoc } from 'firebase/firestore';
 import './signin.css';
 
 const Signin = ({ onLogin, onGoogleLogin, authenticatedUser }) => {
@@ -18,7 +18,7 @@ const Signin = ({ onLogin, onGoogleLogin, authenticatedUser }) => {
     const { identifier, password } = e.target.elements;
     const auth = getAuth();
     try {
-      await signInWithEmailAndPassword(auth, identifier.value, password.value);
+      await onLogin(identifier.value, password.value);
       setSignInError(null); // Clear any previous error
     } catch (error) {
       console.error('Login Error:', error);
@@ -63,10 +63,10 @@ const Signin = ({ onLogin, onGoogleLogin, authenticatedUser }) => {
       });
   
       // Log in the user after sign-up
-      await signInWithEmailAndPassword(auth, newEmail.value, newPassword.value);
+      await onLogin(newEmail.value, newPassword.value);
       setSignUpError(null); // Clear any previous error
     } catch (error) {
-      console.error('Sign Up Error:', error);
+      console.error(error);
       setSignUpError(error.message);
     }
   };
@@ -75,7 +75,7 @@ const Signin = ({ onLogin, onGoogleLogin, authenticatedUser }) => {
     <div className='signin'>
       <div className="signin-container">
         <div className="signin-content">
-          <h1>Sign In</h1>
+          <h2>Sign In</h2>
           <form onSubmit={handleLogin}>
             <div className="form-group">
               <label htmlFor="identifier">Username or Email</label>
@@ -87,8 +87,8 @@ const Signin = ({ onLogin, onGoogleLogin, authenticatedUser }) => {
             </div>
             <button type="submit" className="btn">Sign In</button>
             <button type="button" className="google-btn" onClick={onGoogleLogin}>Sign In with Google</button>
+            {signInError && <p className="error-message">{signInError}</p>} {/* Added error message display here */}
           </form>
-          {signInError && <p className="error-message">{signInError}</p>}
           <p>Don't have an account? <a href="#" onClick={() => setShowSignUp(true)}>Create one!</a></p>
           {showSignUp && (
             <form onSubmit={handleSignUp}>
@@ -120,6 +120,6 @@ const Signin = ({ onLogin, onGoogleLogin, authenticatedUser }) => {
       </div>
     </div>
   );
-};
+}
 
 export default Signin;
