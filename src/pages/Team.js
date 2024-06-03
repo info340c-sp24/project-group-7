@@ -137,7 +137,10 @@ const Team = ({ data, currentTeam, setCurrentTeam, authenticatedUser }) => {
   
       await updateDoc(inviteRef, { status: "declined" });
       await deleteDoc(inviteRef);
-      await deleteDoc(inviteRef);
+      setInvitations(prevInvitations => 
+        prevInvitations.filter(inv => inv.id !== invitation.id)
+      );
+     
   
       console.log("Invitation declined successfully!");
     } catch (error) {
@@ -149,7 +152,7 @@ const Team = ({ data, currentTeam, setCurrentTeam, authenticatedUser }) => {
     <div className='team'>
       {invitations.length > 0 && userData.team == null && (
       <div className="invitations">
-        <h3>Invitations</h3>
+        <h1>Invitations</h1>
         <ul>
           {invitations.map((invitation) => (
             <li key={invitation.id}>
@@ -166,7 +169,7 @@ const Team = ({ data, currentTeam, setCurrentTeam, authenticatedUser }) => {
       <div className="noTeam">
         {currentTeam ? (
           <div className='team-header'>
-            <h2>Your team: {currentTeam}</h2>
+            <h1>Your team: {currentTeam}</h1>
           </div>
         ) : (
           <div className='team-header'>
@@ -180,7 +183,7 @@ const Team = ({ data, currentTeam, setCurrentTeam, authenticatedUser }) => {
               <button className="createTeamBtn" onClick={handleEdit}>Create a team</button>
             )}
 
-            <h3 className='freeAgentsTitle'>Free Agents:</h3>
+            <h2 className='freeAgentsTitle'>Free Agents:</h2>
           </div>
         )}
 
