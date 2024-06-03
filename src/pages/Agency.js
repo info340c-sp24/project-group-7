@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import _ from 'lodash';
 import './team.css';
-import { getFirestore, collection, doc, getDoc, getDocs, addDoc } from 'firebase/firestore';
+import { getFirestore, collection, doc, getDoc, getDocs, addDoc } from 'firebase/firestore'
 
 export default function Agency({ data, authenticatedUser }) {
   console.log('Authenticated user: ', authenticatedUser);
@@ -251,6 +251,9 @@ export default function Agency({ data, authenticatedUser }) {
           </tbody>
         </table>
       </div>
+      <div className="chat-section">
+          <Chat />
+        </div>
     </div>
   );
 }
