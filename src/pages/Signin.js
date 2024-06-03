@@ -75,7 +75,7 @@ const Signin = ({ onLogin, onGoogleLogin, authenticatedUser }) => {
     <div className='signin'>
       <div className="signin-container">
         <div className="signin-content">
-          <h2>Sign In</h2>
+          <h1>Sign In</h1>
           <form onSubmit={handleLogin}>
             <div className="form-group">
               <label htmlFor="identifier">Username or Email</label>

@@ -126,7 +126,7 @@ const Profile = ({ authenticatedUser }) => {
           </section>
 
           <section className="position">
-            <h2>Position</h2>
+            <h1>Position</h1>
             {positions.map((pos) => (
               <label key={pos}>
                 <input
@@ -167,7 +167,7 @@ const Profile = ({ authenticatedUser }) => {
           </section>
 
           <section className="bio">
-            <h2>Basketball Experience</h2>
+            <h3>Basketball Experience</h3>
             <input
               type="text"
               name="experience"
@@ -177,21 +177,21 @@ const Profile = ({ authenticatedUser }) => {
           </section>
 
           <section className="bio-data">
-            <h2>Height (in)</h2>
+            <h3>Height (in)</h3>
             <input
               type="number"
               name="height"
               value={formData.height || ''}
               onChange={handleInputChange}
             />
-            <h2>Weight (lb)</h2>
+            <h3>Weight (lb)</h3>
             <input
               type="number"
               name="weight"
               value={formData.weight || ''}
               onChange={handleInputChange}
             />
-            <h2>Wingspan (in)</h2>
+            <h3>Wingspan (in)</h3>
             <input
               type="number"
               name="wingspan"
@@ -201,7 +201,7 @@ const Profile = ({ authenticatedUser }) => {
           </section>
 
           <section className="stats">
-            <h2>Statistics</h2>
+            <h3>Statistics</h3>
             <ul>
               <li>
                 Games played:
@@ -261,7 +261,7 @@ const Profile = ({ authenticatedUser }) => {
           </section>
 
           <section className="contact-info">
-            <h2>Contact Information</h2>
+            <h3>Contact Information</h3>
             <p>Email: {formData.email}</p>
             <input
               type="text"

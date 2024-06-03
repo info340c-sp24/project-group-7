@@ -183,7 +183,7 @@ const Team = ({ data, currentTeam, setCurrentTeam, authenticatedUser }) => {
               <button className="createTeamBtn" onClick={handleEdit}>Create a team</button>
             )}
 
-            <h2 className='freeAgentsTitle'>Free Agents:</h2>
+            <h3 className='freeAgentsTitle'>Free Agents:</h3>
           </div>
         )}
 
