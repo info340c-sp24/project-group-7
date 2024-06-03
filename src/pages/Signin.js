@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword } from 'firebase/auth';
-import { getFirestore, collection, doc, addDoc, setDoc } from 'firebase/firestore';
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import './signin.css';
 
 const Signin = ({ onLogin, onGoogleLogin, authenticatedUser }) => {
@@ -16,11 +16,12 @@ const Signin = ({ onLogin, onGoogleLogin, authenticatedUser }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
     const { identifier, password } = e.target.elements;
+    const auth = getAuth();
     try {
-      await onLogin(identifier.value, password.value);
+      await signInWithEmailAndPassword(auth, identifier.value, password.value);
       setSignInError(null); // Clear any previous error
     } catch (error) {
-      console.error(error);
+      console.error('Login Error:', error);
       setSignInError(error.message);
     }
   };
@@ -62,10 +63,10 @@ const Signin = ({ onLogin, onGoogleLogin, authenticatedUser }) => {
       });
   
       // Log in the user after sign-up
-      await onLogin(newEmail.value, newPassword.value);
+      await signInWithEmailAndPassword(auth, newEmail.value, newPassword.value);
       setSignUpError(null); // Clear any previous error
     } catch (error) {
-      console.error(error);
+      console.error('Sign Up Error:', error);
       setSignUpError(error.message);
     }
   };
@@ -119,6 +120,6 @@ const Signin = ({ onLogin, onGoogleLogin, authenticatedUser }) => {
       </div>
     </div>
   );
-}
+};
 
 export default Signin;
