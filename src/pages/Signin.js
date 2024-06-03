@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword } from 'firebase/auth';
-import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import { getFirestore, collection, doc, addDoc, setDoc } from 'firebase/firestore';
 import './signin.css';
 
 const Signin = ({ onLogin, onGoogleLogin, authenticatedUser }) => {
@@ -27,22 +27,40 @@ const Signin = ({ onLogin, onGoogleLogin, authenticatedUser }) => {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-    const { newUsername, newEmail, newPassword } = e.target.elements;
+    const { newUsername, newFirstName, newLastName, newEmail, newPassword } = e.target.elements;
     const auth = getAuth();
     const db = getFirestore();
     try {
       // Create user with email and password
       const userCredential = await createUserWithEmailAndPassword(auth, newEmail.value, newPassword.value);
       const user = userCredential.user;
-
-      // Add the username to Firestore
-      await addDoc(collection(db, "Ball"), {
+  
+      // Add user profile data to Firestore
+      const userDocRef = doc(db, "Ball", user.uid);
+      await setDoc(userDocRef, {
         uid: user.uid,
         username: newUsername.value,
+        firstName: newFirstName.value,
+        lastName: newLastName.value,
         email: newEmail.value,
-        team: null // Assuming new users don't have a team initially
+        experience: '',
+        height: 0,
+        weight: 0,
+        wingspan: 0,
+        state: '',
+        county: '',
+        city: '',
+        position: [],
+        games: 0,
+        points: 0,
+        assists: 0,
+        rebounds: 0,
+        steals: 0,
+        blocks: 0,
+        phone: '',
+        team: null,
       });
-
+  
       // Log in the user after sign-up
       await onLogin(newEmail.value, newPassword.value);
       setSignUpError(null); // Clear any previous error
@@ -76,6 +94,14 @@ const Signin = ({ onLogin, onGoogleLogin, authenticatedUser }) => {
               <div className="form-group">
                 <label htmlFor="newUsername">Username</label>
                 <input type="text" id="newUsername" name="newUsername" required className="input-field" />
+              </div>
+              <div className="form-group">
+                <label htmlFor="newFirstName">First Name</label>
+                <input type="text" id="newFirstName" name="newFirstName" required className="input-field" />
+              </div>
+              <div className="form-group">
+                <label htmlFor="newLastName">Last Name</label>
+                <input type="text" id="newLastName" name="newLastName" required className="input-field" />
               </div>
               <div className="form-group">
                 <label htmlFor="newEmail">Email</label>

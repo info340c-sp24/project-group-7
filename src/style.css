@@ -50,6 +50,11 @@ nav img {
 
 body {
     padding-top: 60px;
+    background-image: url('./img/bg-small.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    background-attachment: fixed;
 }
 
 body a {
@@ -73,7 +78,7 @@ table {
 }
 
 .footer-body {
-    padding-top: 5%;
+    padding-top: 10%;
 }
 
 footer {
@@ -135,6 +140,10 @@ footer {
         background-size: cover;
         background-attachment: fixed;
     }
+
+    .footer-body {
+        padding-top: 8%;
+    }
 }
 
 @media (min-width: 1200px) {
@@ -144,5 +153,9 @@ footer {
 
     nav img {
         width: 5rem;
+    }
+
+    .footer-body {
+        padding-top: 5%;
     }
 }

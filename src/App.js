@@ -141,6 +141,7 @@ const App = () => {
 
   const handleLogout = () => {
     setAuthenticatedUser(null);
+    <Navigate to={'./signin'}/>
   };
 
   const updateUser = (updatedUser) => {
@@ -161,7 +162,6 @@ const App = () => {
           path="/profile"
           element={
             <Profile
-              user={authenticatedUser}
               updateUser={updateUser}
               authenticatedUser={authenticatedUser}
             />
@@ -182,14 +182,14 @@ const App = () => {
           )
           }
         />
-        <Route 
-          path="/agency" 
+        <Route
+          path="/agency"
           element={
-            <Agency 
-              data={profilesData} 
+            <Agency
+              data={profilesData}
               authenticatedUser={authenticatedUser}
             />
-          } 
+          }
         />
         <Route
           path="/signin"
