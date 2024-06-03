@@ -195,6 +195,7 @@ const App = () => {
           path="/signin"
           element={<Signin onLogin={handleLogin} onGoogleLogin={handleGoogleLogin} authenticatedUser={authenticatedUser} />}
         />
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
       <Footer />
     </Router>
