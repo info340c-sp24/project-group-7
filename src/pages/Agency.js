@@ -1,16 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import _ from 'lodash';
 import './team.css';
-import { getFirestore, doc, updateDoc } from 'firebase/firestore';
-import Chat from '../components/Chat';
+import { getFirestore, collection, doc, getDoc, getDocs, addDoc } from 'firebase/firestore'
 
 export default function Agency({ data, authenticatedUser }) {
-  console.log('Agency data being passed on: ', data);
   console.log('Authenticated user: ', authenticatedUser);
   const [sortByCriteria, setSortByCriteria] = useState(null);
   const [isAscending, setIsAscending] = useState(null);
   const [selectedPosition, setSelectedPosition] = useState('');
   const [filterByLocation, setFilterByLocation] = useState(false);
+  const [userData, setUserData] = useState(null);
+  console.log(userData);
+
+  useEffect(() => {
+    if (authenticatedUser) {
+      const fetchProfile = async () => {
+        try {
+          const db = getFirestore();
+          const userRef = doc(db, 'Ball', authenticatedUser.uid);
+          const docSnap = await getDoc(userRef);
+
+          if (docSnap.exists()) {
+            const userData = docSnap.data();
+            console.log('Authenticated user data:', userData);
+            setUserData(userData); // Set userData state
+          } else {
+            console.log('No such document!');
+          }
+        } catch (error) {
+          console.error('Error fetching authenticated user data:', error);
+        }
+      };
+
+      fetchProfile();
+    }
+  }, [authenticatedUser]);
 
   const handleClick = (event) => {
     const { name } = event.currentTarget;
@@ -47,31 +71,41 @@ export default function Agency({ data, authenticatedUser }) {
   }
 
   const filteredData = sortedData.filter((user) => {
-    if (filterByLocation && authenticatedUser && authenticatedUser.state && authenticatedUser.county) {
+    if (filterByLocation && userData && userData.state && userData.county) {
       return (
         user.team === null &&
-        (user.position === selectedPosition || selectedPosition === '') &&
-        user.state === authenticatedUser.state &&
-        user.county === authenticatedUser.county
+        (Array.isArray(user.position) ? user.position.includes(selectedPosition) : user.position === selectedPosition || selectedPosition === '') &&
+        user.state === userData.state &&
+        user.county === userData.county
       );
     } else {
-      return user.team === null && (user.position === selectedPosition || selectedPosition === '');
+      if (selectedPosition === '') {
+        return user.team === null;
+      } else {
+        return user.team === null && (Array.isArray(user.position) ? user.position.includes(selectedPosition) : user.position === selectedPosition);
+      }
     }
   });
 
   const handleAddToTeam = async (user) => {
-    if (!authenticatedUser || !authenticatedUser.team) {
+    if (!userData || !userData.team) {
       console.error('Authenticated user does not have a team.');
       return;
     }
 
     try {
       const db = getFirestore();
-      const userRef = doc(db, "Ball", user.username);
-      await updateDoc(userRef, { team: authenticatedUser.team });
-      console.log(`User ${user.username} has been added to team ${authenticatedUser.team}`);
+      const invitesRef = collection(db, "Invites");
+      await addDoc(invitesRef, {
+        senderId: userData.uid,
+        senderUser: userData.username,
+        receiverId: user.uid,
+        teamName: userData.team,
+        status: "pending"
+      });
+      console.log(`Invitation sent to user ${user.username}`);
     } catch (error) {
-      console.error('Error adding user to team: ', error);
+      console.error('Error sending invitation: ', error);
     }
   };
 
@@ -185,32 +219,35 @@ export default function Agency({ data, authenticatedUser }) {
                 />
                 Games
               </th>
+              {userData && userData.team && (
+                <th>Invite</th>
+              )}
             </tr>
           </thead>
           <tbody>
-            {filteredData.map((profileObj) => (
-              <tr key={profileObj.username}>
-                <td>{`${profileObj.firstName} ${profileObj.lastName}`}</td>
-                <td className="text-center">{profileObj.email}</td>
-                <td className="text-center">{profileObj.position}</td>
-                <td className="text-center">{profileObj.height}</td>
-                <td className="text-center">{profileObj.weight}</td>
-                <td className="text-center">{profileObj.wingspan}</td>
-                <td className="text-center">{(profileObj.points / profileObj.games).toFixed(1)}</td>
-                <td className="text-center">{(profileObj.assists / profileObj.games).toFixed(1)}</td>
-                <td className="text-center">{(profileObj.rebounds / profileObj.games).toFixed(1)}</td>
-                <td className="text-center">{(profileObj.steals / profileObj.games).toFixed(1)}</td>
-                <td className="text-center">{(profileObj.blocks / profileObj.games).toFixed(1)}</td>
-                <td className="text-center">{profileObj.games}</td>
-                {authenticatedUser && authenticatedUser.team && (
-                  <td className="text-center">
-                    <button onClick={() => handleAddToTeam(profileObj)}>
-                      <span className="material-icons">add</span>
-                    </button>
-                  </td>
-                )}
-              </tr>
-            ))}
+          {filteredData.map((profileObj) => (
+            <tr key={profileObj.username}>
+              <td>{`${profileObj.firstName} ${profileObj.lastName}`}</td>
+              <td className="text-center">{profileObj.email}</td>
+              <td className="text-center">{Array.isArray(profileObj.position) ? profileObj.position.join(', ') : profileObj.position || 'N/A'}</td>
+              <td className="text-center">{profileObj.height || 'N/A'}</td>
+              <td className="text-center">{profileObj.weight || 'N/A'}</td>
+              <td className="text-center">{profileObj.wingspan || 'N/A'}</td>
+              <td className="text-center">{profileObj.games ? (profileObj.points && profileObj.games ? (profileObj.points / profileObj.games).toFixed(1) : 'N/A') : 'N/A'}</td>
+              <td className="text-center">{profileObj.games ? (profileObj.assists && profileObj.games ? (profileObj.assists / profileObj.games).toFixed(1) : 'N/A') : 'N/A'}</td>
+              <td className="text-center">{profileObj.games ? (profileObj.rebounds && profileObj.games ? (profileObj.rebounds / profileObj.games).toFixed(1) : 'N/A') : 'N/A'}</td>
+              <td className="text-center">{profileObj.games ? (profileObj.steals && profileObj.games ? (profileObj.steals / profileObj.games).toFixed(1) : 'N/A') : 'N/A'}</td>
+              <td className="text-center">{profileObj.games ? (profileObj.blocks && profileObj.games ? (profileObj.blocks / profileObj.games).toFixed(1) : 'N/A') : 'N/A'}</td>
+              <td className="text-center">{profileObj.games || 'N/A'}</td>
+              {userData && userData.team && (
+                <td className="text-center">
+                  <button onClick={() => handleAddToTeam(profileObj)}>
+                    <span className="material-icons">add</span>
+                  </button>
+                </td>
+              )}
+            </tr>
+          ))}
           </tbody>
         </table>
       </div>

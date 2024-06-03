@@ -3,75 +3,109 @@ import { Navigate } from 'react-router-dom';
 import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
 import './profile.css';
 
-const Profile = ({ user, authenticatedUser }) => {
+const Profile = ({ authenticatedUser }) => {
+  console.log(authenticatedUser);
   const [isEditing, setIsEditing] = useState(false);
   const [isEditClicked, setIsEditClicked] = useState(false);
-  const [formData, setFormData] = useState(user ? { ...user } : {});
+  const [formData, setFormData] = useState(authenticatedUser ? { ...authenticatedUser } : {});
   const defaultImage = 'img/pfp.jpg';
+  const positions = ['PG', 'SG', 'SF', 'PF', 'C'];
 
-  //firebase
   useEffect(() => {
-    console.log("hello");
     if (authenticatedUser) {
       const fetchProfile = async () => {
         const db = getFirestore();
         const userRef = doc(db, "Ball", authenticatedUser.uid);
         const docSnap = await getDoc(userRef);
 
-        if (docSnap.exists() && !isEditClicked){
-          
+        if (docSnap.exists() && !isEditClicked) {
           const data = docSnap.data();
-
-          console.log("logged fetch data: ", data);
-
-          setFormData(data);
-        } else {
-          setIsEditing(true);
+          console.log(data);
+          setFormData({
+            ...data,
+            team: data.team || null,
+            position: data.position || [],
+            height: data.height || '',
+            weight: data.weight || '',
+            wingspan: data.wingspan || '',
+            games: data.games || 0,
+            points: data.points || 0,
+            assists: data.assists || 0,
+            rebounds: data.rebounds || 0,
+            steals: data.steals || 0,
+            blocks: data.blocks || 0,
+            phone: data.phone || '',
+            img: data.img || defaultImage,
+          });
         }
       };
 
       fetchProfile();
     }
-  }, []);
+  }, [authenticatedUser, isEditClicked]);
 
-  if (!user) {
+  if (!authenticatedUser) {
     return <Navigate to="/signin" />;
   }
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: e.target.type === 'number' ? Number(value) : value,
-    });
+    const { name, value, checked } = e.target;
+    if (name === 'position') {
+      const updatedPositions = checked
+        ? [...(formData.position || []), value]
+        : (formData.position || []).filter((pos) => pos !== value);
+      setFormData({
+        ...formData,
+        [name]: updatedPositions,
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: e.target.type === 'number' ? Number(value) : value,
+      });
+    }
   };
 
   const saveProfile = async () => {
     const db = getFirestore();
     const userRef = doc(db, "Ball", authenticatedUser.uid);
+    const userData = {
+      ...formData,
+      team: formData.team,
+      position: formData.position,
+      height: formData.height,
+      weight: formData.weight,
+      wingspan: formData.wingspan,
+      games: formData.games,
+      points: formData.points,
+      assists: formData.assists,
+      rebounds: formData.rebounds,
+      steals: formData.steals,
+      blocks: formData.blocks,
+      phone: formData.phone,
+      img: formData.img || defaultImage,
+    };
   
     try {
-      await setDoc(userRef, formData);
+      await setDoc(userRef, userData); // Use setDoc to update the document
       console.log("Profile saved successfully!");
     } catch (error) {
       console.error("Error saving profile: ", error);
     }
-
-    console.log("Profile saved successfully! -- runs after everything runs");
   };
-  //
 
   const handleSave = async () => {
     await saveProfile();
     setIsEditing(false);
-    setFormData(formData);
+    setIsEditClicked(false);
   };
 
   const handleCancel = () => {
-    setFormData(user);
     setIsEditing(false);
+    setFormData(authenticatedUser);
+    setIsEditClicked(false);
   };
-  console.log("form data: ", formData);
+
   return (
     <div className='profile'>
       {isEditing ? (
@@ -88,6 +122,47 @@ const Profile = ({ user, authenticatedUser }) => {
               value={formData.img}
               onChange={handleInputChange}
               placeholder="Image URL"
+            />
+          </section>
+
+          <section className="position">
+            <h2>Position</h2>
+            {positions.map((pos) => (
+              <label key={pos}>
+                <input
+                  type="checkbox"
+                  name="position"
+                  value={pos}
+                  checked={Array.isArray(formData.position) ? formData.position.includes(pos) : false}
+                  onChange={handleInputChange}
+                />
+                {pos}
+              </label>
+            ))}
+          </section>
+
+          <section className="location">
+            <h2>Location</h2>
+            <input
+              type="text"
+              name="state"
+              value={formData.state || ''}
+              onChange={handleInputChange}
+              placeholder="State"
+            />
+            <input
+              type="text"
+              name="county"
+              value={formData.county || ''}
+              onChange={handleInputChange}
+              placeholder="County"
+            />
+            <input
+              type="text"
+              name="city"
+              value={formData.city || ''}
+              onChange={handleInputChange}
+              placeholder="City"
             />
           </section>
 
@@ -122,31 +197,6 @@ const Profile = ({ user, authenticatedUser }) => {
               name="wingspan"
               value={formData.wingspan || ''}
               onChange={handleInputChange}
-            />
-          </section>
-
-          <section className="location">
-            <h2>Location</h2>
-            <input
-              type="text"
-              name="state"
-              value={formData.state || ''}
-              onChange={handleInputChange}
-              placeholder="State"
-            />
-            <input
-              type="text"
-              name="county"
-              value={formData.county || ''}
-              onChange={handleInputChange}
-              placeholder="County"
-            />
-            <input
-              type="text"
-              name="city"
-              value={formData.city || ''}
-              onChange={handleInputChange}
-              placeholder="City"
             />
           </section>
 
@@ -239,6 +289,18 @@ const Profile = ({ user, authenticatedUser }) => {
             />
           </section>
 
+          <section className="position">
+            <h2>Position</h2>
+            <p>{Array.isArray(formData.position) ? formData.position.join(', ') : formData.position || 'Not Provided'}</p>
+          </section>
+
+          <section className="location">
+            <h2>Location</h2>
+            <p>State: {formData.state || 'Not Provided'}</p>
+            <p>County: {formData.county || 'Not Provided'}</p>
+            <p>City: {formData.city || 'Not Provided'}</p>
+          </section>
+
           <section className="bio">
             <h2>Basketball Experience</h2>
             <p>{formData.experience || 'Not Provided'}</p>
@@ -253,33 +315,32 @@ const Profile = ({ user, authenticatedUser }) => {
             <p>{formData.wingspan || 'Not Provided'}</p>
           </section>
 
-          <section className="location">
-            <h2>Location</h2>
-            <p>State: {formData.state || 'Not Provided'}</p>
-            <p>County: {formData.county || 'Not Provided'}</p>
-            <p>City: {formData.city || 'Not Provided'}</p>
-          </section>
-
           <section className="stats">
             <h2>Statistics</h2>
             <ul>
               <li>Games played: {formData.games || 0}</li>
-              <li>Points per game: {formData.points || 0}</li>
-              <li>Assists per game: {formData.assists || 0}</li>
-              <li>Rebounds per game: {formData.rebounds || 0}</li>
-              <li>Steals per game: {formData.steals || 0}</li>
-              <li>Blocks per game: {formData.blocks || 0}</li>
+              <li>Total Points: {formData.points || 0}</li>
+              <li>Total Assists: {formData.assists || 0}</li>
+              <li>Total Rebounds: {formData.rebounds || 0}</li>
+              <li>Total Steals: {formData.steals || 0}</li>
+              <li>Total Blocks: {formData.blocks || 0}</li>
             </ul>
           </section>
 
           <section className="contact-info">
             <h2>Contact Information</h2>
-            <p>Email: {formData.email || 'Not Provided'}</p>
+            <p>Email: {formData.email}</p>
             <p>Phone: {formData.phone || 'Not Provided'}</p>
           </section>
 
-          <button type="button" onClick={() => { setIsEditing(true); setIsEditClicked(true); }}>
-            Edit Profile
+          <button
+            className="edit"
+            onClick={() => {
+              setIsEditing(true);
+              setIsEditClicked(true);
+            }}
+          >
+            Edit
           </button>
         </div>
       )}

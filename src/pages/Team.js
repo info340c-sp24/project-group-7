@@ -1,11 +1,35 @@
-import React, { useState } from 'react';
-import { getFirestore, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import React, { useState, useEffect } from 'react';
+import { getFirestore, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, where, query, collection } from "firebase/firestore";
 import './team.css';
 
 const Team = ({ data, currentTeam, setCurrentTeam, authenticatedUser }) => {
   const [teamName, setTeamName] = useState(currentTeam);
   const [isEditing, setIsEditing] = useState(false);
+  const [userData, setUserData] = useState(null);
 
+  useEffect(() => {
+    if (authenticatedUser) {
+      const fetchProfile = async () => {
+        try {
+          const db = getFirestore();
+          const userRef = doc(db, 'Ball', authenticatedUser.uid);
+          const docSnap = await getDoc(userRef);
+
+          if (docSnap.exists()) {
+            const userData = docSnap.data();
+            console.log('Authenticated user data:', userData);
+            setUserData(userData);
+          } else {
+            console.log('No such document!');
+          }
+        } catch (error) {
+          console.error('Error fetching authenticated user data:', error);
+        }
+      };
+
+      fetchProfile();
+    }
+  }, [authenticatedUser]);
   
   const updateUserTeam = async (userId, newTeamName) => {
     try {
@@ -14,11 +38,9 @@ const Team = ({ data, currentTeam, setCurrentTeam, authenticatedUser }) => {
       const docSnapshot = await getDoc(userRef);
 
       if (docSnapshot.exists()) {
-        // Document exists, update the team field
         await updateDoc(userRef, { team: newTeamName });
         console.log("Team updated successfully!");
       } else {
-        // Document does not exist, create it with the team field
         await setDoc(userRef, { team: newTeamName });
         console.log("Team created successfully!");
       }
@@ -32,8 +54,8 @@ const Team = ({ data, currentTeam, setCurrentTeam, authenticatedUser }) => {
   };
 
   const handleSave = async () => {
-    if (authenticatedUser) {
-      await updateUserTeam(authenticatedUser.uid, teamName);
+    if (userData) {
+      await updateUserTeam(userData.uid, teamName);
       setIsEditing(false);
       setCurrentTeam(teamName);
     }
@@ -43,18 +65,104 @@ const Team = ({ data, currentTeam, setCurrentTeam, authenticatedUser }) => {
     setTeamName(event.target.value);
   };
 
-  const handleLeaveTeam = () => {
+  const handleLeaveTeam = async () => {
     const confirmation = window.confirm("Are you sure you want to leave the team?");
     if (confirmation) {
-      setCurrentTeam(null);
+      try {
+        const db = getFirestore();
+        const userRef = doc(db, "Ball", userData.uid);
+  
+        await updateDoc(userRef, { team: null });
+        setCurrentTeam(null);
+        console.log("Left team successfully!");
+      } catch (error) {
+        console.error("Error leaving team: ", error);
+      }
     }
   };
-  console.log("cURRENT TEAM DISPLAYED IN TEAM.js", currentTeam);
-  // Filter data to get users in the current user's team
+  console.log("CURRENT TEAM DISPLAYED IN TEAM.js", currentTeam);
   const teamMembers = data.filter(profileObj => profileObj.team === currentTeam);
+
+  const fetchInvitations = async (userId) => {
+    console.log(userId);
+    try {
+      const db = getFirestore();
+      const invitesRef = collection(db, "Invites");
+      const querySnapshot = await getDocs(query(invitesRef, where("receiverId", "==", userId)));
+      const invitations = [];
+      querySnapshot.forEach((doc) => {
+        invitations.push({ id: doc.id, ...doc.data() });
+      });
+      return invitations;
+    } catch (error) {
+      console.error("Error fetching invitations: ", error);
+      return [];
+    }
+  };  
+  
+  const [invitations, setInvitations] = useState([]);
+
+  useEffect(() => {
+    if (userData) {
+      fetchInvitations(userData.uid).then((invitations) => {
+        setInvitations(invitations);
+      });
+    }
+  }, [userData]);
+  console.log(invitations);
+
+  const handleAcceptInvitation = async (invitation) => {
+    try {
+      const db = getFirestore();
+      const inviteRef = doc(db, "Invites", invitation.id);
+      const inviteData = (await getDoc(inviteRef)).data();
+      const { receiverId, teamName } = inviteData;
+  
+      await updateUserTeam(receiverId, teamName);
+      await updateDoc(inviteRef, { status: "accepted" });
+      await deleteDoc(inviteRef);
+  
+      console.log("Invitation accepted successfully!");
+      window.location.reload();
+    } catch (error) {
+      console.error("Error accepting invitation: ", error);
+    }
+  };
+  
+  
+  const handleDeclineInvitation = async (invitation) => {
+    try {
+      const db = getFirestore();
+      const inviteRef = doc(db, "Invites", invitation.id);
+  
+      await updateDoc(inviteRef, { status: "declined" });
+      await deleteDoc(inviteRef);
+      await deleteDoc(inviteRef);
+  
+      console.log("Invitation declined successfully!");
+    } catch (error) {
+      console.error("Error declining invitation: ", error);
+    }
+  };
 
   return (
     <div className='team'>
+      {invitations.length > 0 && userData.team == null && (
+      <div className="invitations">
+        <h3>Invitations</h3>
+        <ul>
+          {invitations.map((invitation) => (
+            <li key={invitation.id}>
+              <p>From: {invitation.senderUser} ({invitation.teamName})</p>
+              <p>Status: {invitation.status}</p>
+              {/* Add buttons to accept or decline the invitation */}
+              <button onClick={() => handleAcceptInvitation(invitation)}>Accept</button>
+              <button onClick={() => handleDeclineInvitation(invitation)}>Decline</button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
       <div className="noTeam">
         {currentTeam ? (
           <div className='team-header'>
@@ -80,30 +188,28 @@ const Team = ({ data, currentTeam, setCurrentTeam, authenticatedUser }) => {
           <table className="table w-100">
             <thead>
               <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Email</th>
-                <th scope="col">Position</th>
-                <th scope="col">PPG</th>
-                <th scope="col">AST</th>
-                <th scope="col">REB</th>
-                <th scope="col">SPG</th>
-                <th scope="col">BLK</th>
-                <th scope="col">Games</th>
+              <th className="text-center">Name</th>
+              <th className="text-center">Email</th>
+              <th className="text-center">Position</th>
+              <th className="text-center">PPG</th>
+              <th className="text-center">AST</th>
+              <th className="text-center">REB</th>
+              <th className="text-center">STL</th>
+              <th className="text-center">BLK</th>
               </tr>
             </thead>
             <tbody>
               {teamMembers.map((profileObj) => (
                 <tr key={profileObj.username}>
-                  <td>{`${profileObj.firstName} ${profileObj.lastName}`}</td>
-                  <td>{profileObj.email}</td>
-                  <td>{profileObj.position}</td>
-                  <td>{(profileObj.points / profileObj.games).toFixed(1)}</td>
-                  <td>{(profileObj.assists / profileObj.games).toFixed(1)}</td>
-                  <td>{(profileObj.rebounds / profileObj.games).toFixed(1)}</td>
-                  <td>{(profileObj.steals / profileObj.games).toFixed(1)}</td>
-                  <td>{(profileObj.blocks / profileObj.games).toFixed(1)}</td>
-                  <td>{profileObj.games}</td>
-                </tr>
+                <td>{`${profileObj.firstName} ${profileObj.lastName}`}</td>
+                <td className="text-center">{profileObj.email}</td>
+                <td className="text-center">{Array.isArray(profileObj.position) ? profileObj.position.join(', ') : profileObj.position || 'N/A'}</td>
+                <td className="text-center">{profileObj.games ? (profileObj.points && profileObj.games ? (profileObj.points / profileObj.games).toFixed(1) : 'N/A') : 'N/A'}</td>
+                <td className="text-center">{profileObj.games ? (profileObj.assists && profileObj.games ? (profileObj.assists / profileObj.games).toFixed(1) : 'N/A') : 'N/A'}</td>
+                <td className="text-center">{profileObj.games ? (profileObj.rebounds && profileObj.games ? (profileObj.rebounds / profileObj.games).toFixed(1) : 'N/A') : 'N/A'}</td>
+                <td className="text-center">{profileObj.games ? (profileObj.steals && profileObj.games ? (profileObj.steals / profileObj.games).toFixed(1) : 'N/A') : 'N/A'}</td>
+                <td className="text-center">{profileObj.games ? (profileObj.blocks && profileObj.games ? (profileObj.blocks / profileObj.games).toFixed(1) : 'N/A') : 'N/A'}</td>
+              </tr>
               ))}
             </tbody>
           </table>
