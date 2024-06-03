@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import _ from 'lodash';
 import './team.css';
 import { getFirestore, collection, doc, getDoc, getDocs, addDoc } from 'firebase/firestore'
+import Chat from '../components/Chat';
 
 export default function Agency({ data, authenticatedUser }) {
   console.log('Authenticated user: ', authenticatedUser);
